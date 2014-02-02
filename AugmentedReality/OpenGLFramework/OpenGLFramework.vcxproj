@@ -11,19 +11,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CameraClass.cpp" />
+    <ClCompile Include="ColourShaderClass.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="openglclass.cpp" />
     <ClCompile Include="SurfCameraFeed.cpp" />
     <ClCompile Include="systemclass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraClass.h" />
+    <ClInclude Include="ColourShaderClass.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
+    <ClInclude Include="ModelClass.h" />
     <ClInclude Include="openglclass.h" />
     <ClInclude Include="SurfCameraFeed.h" />
     <ClInclude Include="systemclass.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="color.ps" />
+    <None Include="color.vs" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{55578189-0D30-4B0B-93DD-D642358294F6}</ProjectGuid>
