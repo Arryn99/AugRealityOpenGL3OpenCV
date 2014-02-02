@@ -1,12 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: ModelClass.cpp
+// Filename: modelclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "ModelClass.h"
+#include "modelclass.h"
 
 
 ModelClass::ModelClass()
 {
+	m_Texture = 0; //initialise the texture object to null
 }
 
 
@@ -20,7 +21,12 @@ ModelClass::~ModelClass()
 }
 
 //The Initialize function will call the initialization functions for the vertex and index buffers.
-bool ModelClass::Initialize(OpenGLClass* OpenGL)
+
+//Initialize takes as input the file name of the .tga texture that the model will be using. It also takes as
+//input the texture unit in which to load the .tga file into. And it also takes a boolean value which indicates if
+//the color should wrap around or clamp at the edges.
+
+bool ModelClass::Initialize(OpenGLClass* OpenGL, char* textureFilename, unsigned int textureUnit, bool wrap)
 {
 	bool result;
 
@@ -32,12 +38,24 @@ bool ModelClass::Initialize(OpenGLClass* OpenGL)
 		return false;
 	}
 
+	//the initialise function calls a new private function that will load the .tga texture.
+	// Load the texture for this model.
+	result = LoadTexture(OpenGL, textureFilename, textureUnit, wrap);
+	if(!result)
+	{
+		return false;
+	}
+
 	return true;
 }
+
 
 //The Shutdown function will call the shutdown functions for the buffers and related data.
 void ModelClass::Shutdown(OpenGLClass* OpenGL)
 {
+	// Release the texture used for this model.
+	ReleaseTexture();
+
 	// Release the vertex and index buffers.
 	ShutdownBuffers(OpenGL);
 
@@ -46,7 +64,6 @@ void ModelClass::Shutdown(OpenGLClass* OpenGL)
 
 //Render is called from the GraphicsClass::Render function. This function calls RenderBuffers to put
 //the vertex and index buffers on the graphics pipeline and uses the colour shader to render them.
-
 void ModelClass::Render(OpenGLClass* OpenGL)
 {
 	// Put the vertex and index buffers on the graphics pipeline to prepare them for drawing.
@@ -55,13 +72,14 @@ void ModelClass::Render(OpenGLClass* OpenGL)
 	return;
 }
 
+
 //The InitializeBuffers function is where we handle creating the vertex and index buffers.
 bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 {
 	VertexType* vertices;
 	unsigned int* indices;
 
-	//First create two temporary arrays to hold the vertex and index data that we will use later to populate the final buffers with.
+	//create two temporary arrays to hold the vertex and index data that we will use later to populate the final buffers with.
 
 	// Set the number of vertices in the vertex array.
 	m_vertexCount = 3;
@@ -90,27 +108,24 @@ bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 	vertices[0].y = -1.0f;
 	vertices[0].z =  0.0f;
 
-	vertices[0].r = 0.0f;  // Colour.
-	vertices[0].g = 1.0f;
-	vertices[0].b = 0.0f;
+	vertices[0].tu = 0.0f;  // Texture coordinates.
+	vertices[0].tv = 0.0f;
 
 	// Top middle.
 	vertices[1].x = 0.0f;  // Position.
 	vertices[1].y = 1.0f;
 	vertices[1].z = 0.0f;
 
-	vertices[1].r = 0.0f;  // Colour.
-	vertices[1].g = 1.0f;
-	vertices[1].b = 0.0f;
+	vertices[1].tu = 0.5f;  // Texture coordinates.
+	vertices[1].tv = 1.0f;
 
 	// Bottom right.
 	vertices[2].x =  1.0f;  // Position.
 	vertices[2].y = -1.0f;
 	vertices[2].z =  0.0f;
 
-	vertices[2].r = 0.0f;  // Colour.
-	vertices[2].g = 1.0f;
-	vertices[2].b = 0.0f;
+	vertices[2].tu = 1.0f;  // Texture coordinates.
+	vertices[2].tv = 0.0f;
 
 	// Load the index array with data.
 	indices[0] = 0;  // Bottom left.
@@ -126,21 +141,21 @@ bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 	// Generate an ID for the vertex buffer.
 	OpenGL->glGenBuffers(1, &m_vertexBufferId);
 
-	// Bind the vertex buffer and load the vertex (position and colour) data into the vertex buffer.
+	// Bind the vertex buffer and load the vertex (position and texture) data into the vertex buffer.
 	OpenGL->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 	OpenGL->glBufferData(GL_ARRAY_BUFFER, m_vertexCount * sizeof(VertexType), vertices, GL_STATIC_DRAW);
 
 	// Enable the two vertex array attributes.
 	OpenGL->glEnableVertexAttribArray(0);  // Vertex position.
-	OpenGL->glEnableVertexAttribArray(1);  // Vertex colour.
+	OpenGL->glEnableVertexAttribArray(1);  // Texture coordinates.
 
 	// Specify the location and format of the position portion of the vertex buffer.
 	OpenGL->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 	OpenGL->glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(VertexType), 0);
 
-	// Specify the location and format of the colour portion of the vertex buffer.
+	// Specify the location and format of the texture coordinate portion of the vertex buffer.
 	OpenGL->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
-	OpenGL->glVertexAttribPointer(1, 3, GL_FLOAT, false, sizeof(VertexType), (unsigned char*)NULL + (3 * sizeof(float)));
+	OpenGL->glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof(VertexType), (unsigned char*)NULL + (3 * sizeof(float)));
 
 	// Generate an ID for the index buffer.
 	OpenGL->glGenBuffers(1, &m_indexBufferId);
@@ -148,7 +163,7 @@ bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 	// Bind the index buffer and load the index data into it.
 	OpenGL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
 	OpenGL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexCount* sizeof(unsigned int), indices, GL_STATIC_DRAW);
-
+	
 	// Now that the buffers have been loaded we can release the array data.
 	delete [] vertices;
 	vertices = 0;
@@ -192,6 +207,45 @@ void ModelClass::RenderBuffers(OpenGLClass* OpenGL)
 
 	// Render the vertex buffer using the index buffer.
 	glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
+
+	return;
+}
+
+//LoadTexture is a private function that will create the texture object and then initialize it with the input file
+//name provided. This function is called during initialization.
+bool ModelClass::LoadTexture(OpenGLClass* OpenGL, char* textureFilename, unsigned int textureUnit, bool wrap)
+{
+	bool result;
+
+
+	// Create the texture object.
+	m_Texture = new TextureClass;
+	if(!m_Texture)
+	{
+		return false;
+	}
+
+	// Initialize the texture object.
+	result = m_Texture->Initialize(OpenGL, textureFilename, textureUnit, wrap);
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+//The ReleaseTexture function will release the texture object that was created and loaded during
+//the LoadTexture function.
+void ModelClass::ReleaseTexture()
+{
+	// Release the texture object.
+	if(m_Texture)
+	{
+		m_Texture->Shutdown();
+		delete m_Texture;
+		m_Texture = 0;
+	}
 
 	return;
 }

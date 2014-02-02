@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: CameraClass.cpp
+// Filename: cameraclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
-#include "CameraClass.h"
+
+#include "cameraclass.h"
 
 //The class constructor will initialize the position and rotation of the camera to be at the origin of the scene.
 CameraClass::CameraClass()
@@ -98,6 +99,7 @@ void CameraClass::MatrixRotationYawPitchRoll(float* matrix, float yaw, float pit
 {
 	float cYaw, cPitch, cRoll, sYaw, sPitch, sRoll;
 
+
 	// Get the cosine and sin of the yaw, pitch, and roll.
 	cYaw = cosf(yaw);
 	cPitch = cosf(pitch);
@@ -123,7 +125,7 @@ void CameraClass::MatrixRotationYawPitchRoll(float* matrix, float yaw, float pit
 	return;
 }
 
-//The following function multiplies a 3 float vector by a 3x3 matrice and returns the result back in the input vector.
+
 void CameraClass::TransformCoord(VectorType& vector, float* matrix)
 {
 	float x, y, z;
@@ -142,7 +144,7 @@ void CameraClass::TransformCoord(VectorType& vector, float* matrix)
 	return;
 }
 
-//The following function builds a left handed view matrix.
+
 void CameraClass::BuildViewMatrix(VectorType position, VectorType lookAt, VectorType up)
 {
 	VectorType zAxis, xAxis, yAxis;

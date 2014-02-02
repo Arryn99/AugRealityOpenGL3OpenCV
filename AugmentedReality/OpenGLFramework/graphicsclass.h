@@ -1,14 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: GraphicsClass.h
+// Filename: graphicsclass.h
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _GRAPHICSCLASS_H_
 #define _GRAPHICSCLASS_H_
 
 #include "openglclass.h"
-#include "CameraClass.h"
-#include "ModelClass.h"
-#include "ColourShaderClass.h"
+#include "cameraclass.h"
+#include "modelclass.h"
+#include "textureshaderclass.h"
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -33,7 +33,7 @@ private:
 	OpenGLClass* m_OpenGL;
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
-	ColourShaderClass* m_ColourShader;
+	TextureShaderClass* m_TextureShader;
 };
 
 #endif

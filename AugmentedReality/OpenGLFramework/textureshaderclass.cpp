@@ -1,34 +1,31 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: ColourShaderClass.cpp
+// Filename: textureshaderclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "ColourShaderClass.h"
+#include "textureshaderclass.h"
 
 
-ColourShaderClass::ColourShaderClass()
+TextureShaderClass::TextureShaderClass()
 {
 }
 
 
-ColourShaderClass::ColourShaderClass(const ColourShaderClass& other)
+TextureShaderClass::TextureShaderClass(const TextureShaderClass& other)
 {
 }
 
 
-ColourShaderClass::~ColourShaderClass()
+TextureShaderClass::~TextureShaderClass()
 {
 }
 
-//The Initialize function will call the initialization function for the shaders.
-//We pass in the name of the GLSL shader files - they are named color.vs and color.ps.
 
-bool ColourShaderClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
+bool TextureShaderClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 {
 	bool result;
 
-
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader("color.vs", "color.ps", OpenGL, hwnd);
+	result = InitializeShader("texture.vs", "texture.ps", OpenGL, hwnd);
 	if(!result)
 	{
 		return false;
@@ -37,9 +34,8 @@ bool ColourShaderClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	return true;
 }
 
-//The Shutdown function will call the shutdown of the shader.
 
-void ColourShaderClass::Shutdown(OpenGLClass* OpenGL)
+void TextureShaderClass::Shutdown(OpenGLClass* OpenGL)
 {
 	// Shutdown the vertex and pixel shaders as well as the related objects.
 	ShutdownShader(OpenGL);
@@ -47,9 +43,8 @@ void ColourShaderClass::Shutdown(OpenGLClass* OpenGL)
 	return;
 }
 
-//SetShader will set the color GLSL vertex and pixel shaders as the current rendering programs for drawing all 3D geometry.
 
-void ColourShaderClass::SetShader(OpenGLClass* OpenGL)
+void TextureShaderClass::SetShader(OpenGLClass* OpenGL)
 {
 	// Install the shader program as part of the current rendering state.
 	OpenGL->glUseProgram(m_shaderProgram);
@@ -57,12 +52,13 @@ void ColourShaderClass::SetShader(OpenGLClass* OpenGL)
 	return;
 }
 
-//The InitializeShader function is what actually loads the shader files and makes them useable to OpenGL and the GPU.
-bool ColourShaderClass::InitializeShader(char* vsFilename, char* fsFilename, OpenGLClass* OpenGL, HWND hwnd)
+
+bool TextureShaderClass::InitializeShader(char* vsFilename, char* fsFilename, OpenGLClass* OpenGL, HWND hwnd)
 {
 	const char* vertexShaderBuffer;
 	const char* fragmentShaderBuffer;
 	int status;
+
 
 	// Load the vertex shader source file into a text buffer.
 	vertexShaderBuffer = LoadShaderSourceFile(vsFilename);
@@ -124,7 +120,7 @@ bool ColourShaderClass::InitializeShader(char* vsFilename, char* fsFilename, Ope
 
 	// Bind the shader input variables.
 	OpenGL->glBindAttribLocation(m_shaderProgram, 0, "inputPosition");
-	OpenGL->glBindAttribLocation(m_shaderProgram, 1, "inputColor");
+	OpenGL->glBindAttribLocation(m_shaderProgram, 1, "inputTexCoord");
 
 	// Link the shader program.
 	OpenGL->glLinkProgram(m_shaderProgram);
@@ -141,13 +137,14 @@ bool ColourShaderClass::InitializeShader(char* vsFilename, char* fsFilename, Ope
 	return true;
 }
 
-//The LoadShaderSourceFile function loads the shader code into a buffer that can be compiled.
-char* ColourShaderClass::LoadShaderSourceFile(char* filename)
+
+char* TextureShaderClass::LoadShaderSourceFile(char* filename)
 {
 	ifstream fin;
 	int fileSize;
 	char input;
 	char* buffer;
+
 
 	// Open the shader source file.
 	fin.open(filename);
@@ -196,8 +193,8 @@ char* ColourShaderClass::LoadShaderSourceFile(char* filename)
 	return buffer;
 }
 
-//The OutputShaderErrorMessage function writes out errors to a text file in case the GLSL shaders could not compile.
-void ColourShaderClass::OutputShaderErrorMessage(OpenGLClass* OpenGL, HWND hwnd, unsigned int shaderId, char* shaderFilename)
+
+void TextureShaderClass::OutputShaderErrorMessage(OpenGLClass* OpenGL, HWND hwnd, unsigned int shaderId, char* shaderFilename)
 {
 	int logSize, i;
 	char* infoLog;
@@ -247,9 +244,8 @@ void ColourShaderClass::OutputShaderErrorMessage(OpenGLClass* OpenGL, HWND hwnd,
 	return;
 }
 
-//The OutputLinkerErrorMessage function writes out the linker errors to a text file in the event that the linking
-//in the InitializeShader function was not successful.
-void ColourShaderClass::OutputLinkerErrorMessage(OpenGLClass* OpenGL, HWND hwnd, unsigned int programId)
+
+void TextureShaderClass::OutputLinkerErrorMessage(OpenGLClass* OpenGL, HWND hwnd, unsigned int programId)
 {
 	int logSize, i;
 	char* infoLog;
@@ -290,8 +286,8 @@ void ColourShaderClass::OutputLinkerErrorMessage(OpenGLClass* OpenGL, HWND hwnd,
 	return;
 }
 
-//ShutdownShader releases the shaders and the shader program.
-void ColourShaderClass::ShutdownShader(OpenGLClass* OpenGL)
+
+void TextureShaderClass::ShutdownShader(OpenGLClass* OpenGL)
 {
 	// Detach the vertex and fragment shaders from the program.
 	OpenGL->glDetachShader(m_shaderProgram, m_vertexShader);
@@ -307,12 +303,13 @@ void ColourShaderClass::ShutdownShader(OpenGLClass* OpenGL)
 	return;
 }
 
-//The SetShaderVariables function exists to make setting the uniform variables in the shader easier.
-//The matrices used in this function are created inside the GraphicsClass, after which this function is called to send
-//them from there into the vertex shader during the Render function call.
-bool ColourShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMatrix, float* viewMatrix, float* projectionMatrix)
+//The SetShaderParameters function now takes an extra input value called textureUnit.
+//This allows us to specify which texture unit to bind so that OpenGL knows which texture to sample in the pixel shader.
+
+bool TextureShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMatrix, float* viewMatrix, float* projectionMatrix, int textureUnit)
 {
 	unsigned int location;
+
 
 	// Set the world matrix in the vertex shader.
 	location = OpenGL->glGetUniformLocation(m_shaderProgram, "worldMatrix");
@@ -337,6 +334,17 @@ bool ColourShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMat
 		return false;
 	}
 	OpenGL->glUniformMatrix4fv(location, 1, false, projectionMatrix);
+
+	//The location in the pixel shader for the shaderTexture variable is obtained here and then the texture unit is set.
+	//The texture can now be sampled in the pixel shader.
+	
+	// Set the texture in the pixel shader to use the data from the first texture unit.
+	location = OpenGL->glGetUniformLocation(m_shaderProgram, "shaderTexture");
+	if(location == -1)
+	{
+		return false;
+	}
+	OpenGL->glUniform1i(location, textureUnit);
 
 	return true;
 }

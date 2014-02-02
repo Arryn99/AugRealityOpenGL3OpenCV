@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: openglclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
+
 #include "openglclass.h"
 
 
@@ -150,7 +151,7 @@ bool OpenGLClass::InitializeOpenGL(HWND hwnd, int screenWidth, int screenHeight,
 		return false;
 	}
 
-	// Set the 4.0 version of OpenGL in the attribute list.
+	// Set the 3.3 version of OpenGL in the attribute list.
 	attributeList[0] = WGL_CONTEXT_MAJOR_VERSION_ARB;
 	attributeList[1] = 3;
 	attributeList[2] = WGL_CONTEXT_MINOR_VERSION_ARB;

@@ -1,34 +1,26 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: ColourShaderClass.h
-// This class will be used to compile and execute our colour GLSL shaders
-// so that we can render the 3D models that are on the GPU.
+// Filename: textureshaderclass.h
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _COLOURSHADERCLASS_H_
-#define _COLOURSHADERCLASS_H_
-
+#ifndef _TEXTURESHADERCLASS_H_
+#define _TEXTURESHADERCLASS_H_
 
 #include <fstream>
 using namespace std;
 
 #include "openglclass.h"
 
-
-class ColourShaderClass
+class TextureShaderClass
 {
 public:
-	ColourShaderClass();
-	ColourShaderClass(const ColourShaderClass&);
-	~ColourShaderClass();
-
-	//The functions here handle the initialisation and shutdown of the shader.
-	//The SetShaderParameters function sets the shader uniform variables and
-	//the SetShader function sets the shader code as the current rendering system.
+	TextureShaderClass();
+	TextureShaderClass(const TextureShaderClass&);
+	~TextureShaderClass();
 
 	bool Initialize(OpenGLClass*, HWND);
 	void Shutdown(OpenGLClass*);
 	void SetShader(OpenGLClass*);
-	bool SetShaderParameters(OpenGLClass*, float*, float*, float*);
+	bool SetShaderParameters(OpenGLClass*, float*, float*, float*, int);
 
 private:
 	bool InitializeShader(char*, char*, OpenGLClass*, HWND);
