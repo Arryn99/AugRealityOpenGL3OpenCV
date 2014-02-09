@@ -1,10 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: cameraclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
-
 #include "cameraclass.h"
 
-//The class constructor will initialize the position and rotation of the camera to be at the origin of the scene.
+
 CameraClass::CameraClass()
 {
 	m_positionX = 0.0f;
@@ -26,7 +25,7 @@ CameraClass::~CameraClass()
 {
 }
 
-//The SetPosition and SetRotation functions are used for setting up the position and rotation of the camera.
+
 void CameraClass::SetPosition(float x, float y, float z)
 {
 	m_positionX = x;
@@ -44,11 +43,7 @@ void CameraClass::SetRotation(float x, float y, float z)
 	return;
 }
 
-//The Render function uses the position and rotation of the camera to build and update the view matrix.
-//We first setup our variables for up, position, rotation, and so forth. Then at the origin of the scene we first
-//rotate the camera based on the x, y, and z rotation of the camera. Once it is properly rotated we then translate
-//the camera to the position in 3D space. With the correct values in the position, lookAt, and up we can then use
-//the BuildViewMatrix function to create the view matrix to represent the current camera rotation and translation.
+
 void CameraClass::Render()
 {
 	VectorType up, position, lookAt;
@@ -94,7 +89,7 @@ void CameraClass::Render()
 	return;
 }
 
-//The following function creates a left handed rotation matrix from the yaw, pitch, and roll values.
+
 void CameraClass::MatrixRotationYawPitchRoll(float* matrix, float yaw, float pitch, float roll)
 {
 	float cYaw, cPitch, cRoll, sYaw, sPitch, sRoll;
@@ -207,9 +202,7 @@ void CameraClass::BuildViewMatrix(VectorType position, VectorType lookAt, Vector
 	return;
 }
 
-//After the Render function has been called to create the view matrix we can provide the updated view
-//matrix to calling functions using this GetViewMatrix function. The view matrix will be one of the three
-//main matrices used in the GLSL vertex shader.
+
 void CameraClass::GetViewMatrix(float* matrix)
 {
 	matrix[0]  = m_viewMatrix[0];

@@ -101,6 +101,11 @@ bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 		return false;
 	}
 
+	//Each vertex has normals associated with it for lighting calculations.
+	//The normal is a line that is perpendicular to the face of the polygon so that the exact direction
+	//the face is pointing can be calculated. For simplicity purposes the normal for each vertex is set along
+	//the Z axis by setting each Z component to -1.0f which makes the normal point towards the viewer.
+	
 	// Load the vertex array with data.
 
 	// Bottom left.
@@ -111,6 +116,10 @@ bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 	vertices[0].tu = 0.0f;  // Texture coordinates.
 	vertices[0].tv = 0.0f;
 
+	vertices[0].nx =  0.0f;	//Normals
+	vertices[0].ny =  0.0f;
+	vertices[0].nz = -1.0f;
+
 	// Top middle.
 	vertices[1].x = 0.0f;  // Position.
 	vertices[1].y = 1.0f;
@@ -119,6 +128,10 @@ bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 	vertices[1].tu = 0.5f;  // Texture coordinates.
 	vertices[1].tv = 1.0f;
 
+	vertices[1].nx =  0.0f;	//Normals
+	vertices[1].ny =  0.0f;
+	vertices[1].nz = -1.0f;
+
 	// Bottom right.
 	vertices[2].x =  1.0f;  // Position.
 	vertices[2].y = -1.0f;
@@ -126,6 +139,10 @@ bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 
 	vertices[2].tu = 1.0f;  // Texture coordinates.
 	vertices[2].tv = 0.0f;
+
+	vertices[2].nx =  0.0f;	//Normals
+	vertices[2].ny =  0.0f;
+	vertices[2].nz = -1.0f;
 
 	// Load the index array with data.
 	indices[0] = 0;  // Bottom left.
@@ -148,6 +165,7 @@ bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 	// Enable the two vertex array attributes.
 	OpenGL->glEnableVertexAttribArray(0);  // Vertex position.
 	OpenGL->glEnableVertexAttribArray(1);  // Texture coordinates.
+	OpenGL->glEnableVertexAttribArray(2);	//Normals
 
 	// Specify the location and format of the position portion of the vertex buffer.
 	OpenGL->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
@@ -156,6 +174,10 @@ bool ModelClass::InitializeBuffers(OpenGLClass* OpenGL)
 	// Specify the location and format of the texture coordinate portion of the vertex buffer.
 	OpenGL->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 	OpenGL->glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof(VertexType), (unsigned char*)NULL + (3 * sizeof(float)));
+
+	//Specify the location and format of the normal vector portion of the vertex buffer
+	OpenGL->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
+	OpenGL->glVertexAttribPointer(2,3,GL_FLOAT,false, sizeof(VertexType), (unsigned char*)NULL + (5 * sizeof(float)));
 
 	// Generate an ID for the index buffer.
 	OpenGL->glGenBuffers(1, &m_indexBufferId);

@@ -1,19 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: CameraClass.h
-// This camera class to lets OpenGL know from where and also how we are viewing the scene. The camera class will keep track of
-// where the camera is and its current rotation. It will use the position and rotation information to generate a view matrix which
-// will be passed into the GLSL shaders for rendering.
-// The CameraClass header is quite simple with just four functions that will be used.
-// The SetPosition and SetRotation functions will be used to set the position and rotation of the camera object.
-// Render will be used to create the view matrix based on the position and rotation of the camera.
-// And finally GetViewMatrix will be used to retrieve the view matrix from the camera object so that the shaders can use it for rendering.
+// Filename: cameraclass.h
 ////////////////////////////////////////////////////////////////////////////////
-
 #ifndef _CAMERACLASS_H_
 #define _CAMERACLASS_H_
 
+
+//////////////
+// INCLUDES //
+//////////////
 #include <math.h>
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Class name: CameraClass
+////////////////////////////////////////////////////////////////////////////////
 class CameraClass
 {
 private:

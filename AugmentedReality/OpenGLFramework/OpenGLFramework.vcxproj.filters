@@ -30,9 +30,6 @@
     <ClCompile Include="textureclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="textureshaderclass.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="CameraClass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
@@ -51,47 +48,50 @@
     <ClCompile Include="inputclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="colorshaderclass.cpp">
+    <ClCompile Include="LightClass.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="lightshaderclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphicsclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inputclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="openglclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SurfCameraFeed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="systemclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelClass.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="LightClass.h">
+      <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="CameraClass.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="colorshaderclass.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="graphicsclass.h">
+      <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="textureshaderclass.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="inputclass.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelClass.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="openglclass.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="systemclass.h">
+      <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="textureclass.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="lightshaderclass.h">
+      <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="texture.ps">
+    <None Include="Light.vs">
       <Filter>Source Files\OpenGL</Filter>
     </None>
-    <None Include="texture.vs">
+    <None Include="Light.ps">
       <Filter>Source Files\OpenGL</Filter>
     </None>
   </ItemGroup>

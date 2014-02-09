@@ -1,31 +1,31 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: textureshaderclass.cpp
+// Filename: lightshaderclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "textureshaderclass.h"
+#include "lightshaderclass.h"
 
 
-TextureShaderClass::TextureShaderClass()
+LightShaderClass::LightShaderClass()
 {
 }
 
 
-TextureShaderClass::TextureShaderClass(const TextureShaderClass& other)
+LightShaderClass::LightShaderClass(const LightShaderClass& other)
 {
 }
 
 
-TextureShaderClass::~TextureShaderClass()
+LightShaderClass::~LightShaderClass()
 {
 }
 
 
-bool TextureShaderClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
+bool LightShaderClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 {
 	bool result;
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader("texture.vs", "texture.ps", OpenGL, hwnd);
+	result = InitializeShader("Light.vs", "Light.ps", OpenGL, hwnd);
 	if(!result)
 	{
 		return false;
@@ -35,7 +35,7 @@ bool TextureShaderClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 }
 
 
-void TextureShaderClass::Shutdown(OpenGLClass* OpenGL)
+void LightShaderClass::Shutdown(OpenGLClass* OpenGL)
 {
 	// Shutdown the vertex and pixel shaders as well as the related objects.
 	ShutdownShader(OpenGL);
@@ -44,7 +44,7 @@ void TextureShaderClass::Shutdown(OpenGLClass* OpenGL)
 }
 
 
-void TextureShaderClass::SetShader(OpenGLClass* OpenGL)
+void LightShaderClass::SetShader(OpenGLClass* OpenGL)
 {
 	// Install the shader program as part of the current rendering state.
 	OpenGL->glUseProgram(m_shaderProgram);
@@ -53,7 +53,7 @@ void TextureShaderClass::SetShader(OpenGLClass* OpenGL)
 }
 
 
-bool TextureShaderClass::InitializeShader(char* vsFilename, char* fsFilename, OpenGLClass* OpenGL, HWND hwnd)
+bool LightShaderClass::InitializeShader(char* vsFilename, char* fsFilename, OpenGLClass* OpenGL, HWND hwnd)
 {
 	const char* vertexShaderBuffer;
 	const char* fragmentShaderBuffer;
@@ -121,6 +121,7 @@ bool TextureShaderClass::InitializeShader(char* vsFilename, char* fsFilename, Op
 	// Bind the shader input variables.
 	OpenGL->glBindAttribLocation(m_shaderProgram, 0, "inputPosition");
 	OpenGL->glBindAttribLocation(m_shaderProgram, 1, "inputTexCoord");
+	OpenGL->glBindAttribLocation(m_shaderProgram, 2, "inputNormal");
 
 	// Link the shader program.
 	OpenGL->glLinkProgram(m_shaderProgram);
@@ -138,7 +139,7 @@ bool TextureShaderClass::InitializeShader(char* vsFilename, char* fsFilename, Op
 }
 
 
-char* TextureShaderClass::LoadShaderSourceFile(char* filename)
+char* LightShaderClass::LoadShaderSourceFile(char* filename)
 {
 	ifstream fin;
 	int fileSize;
@@ -194,7 +195,7 @@ char* TextureShaderClass::LoadShaderSourceFile(char* filename)
 }
 
 
-void TextureShaderClass::OutputShaderErrorMessage(OpenGLClass* OpenGL, HWND hwnd, unsigned int shaderId, char* shaderFilename)
+void LightShaderClass::OutputShaderErrorMessage(OpenGLClass* OpenGL, HWND hwnd, unsigned int shaderId, char* shaderFilename)
 {
 	int logSize, i;
 	char* infoLog;
@@ -245,7 +246,7 @@ void TextureShaderClass::OutputShaderErrorMessage(OpenGLClass* OpenGL, HWND hwnd
 }
 
 
-void TextureShaderClass::OutputLinkerErrorMessage(OpenGLClass* OpenGL, HWND hwnd, unsigned int programId)
+void LightShaderClass::OutputLinkerErrorMessage(OpenGLClass* OpenGL, HWND hwnd, unsigned int programId)
 {
 	int logSize, i;
 	char* infoLog;
@@ -287,7 +288,7 @@ void TextureShaderClass::OutputLinkerErrorMessage(OpenGLClass* OpenGL, HWND hwnd
 }
 
 
-void TextureShaderClass::ShutdownShader(OpenGLClass* OpenGL)
+void LightShaderClass::ShutdownShader(OpenGLClass* OpenGL)
 {
 	// Detach the vertex and fragment shaders from the program.
 	OpenGL->glDetachShader(m_shaderProgram, m_vertexShader);
@@ -306,7 +307,8 @@ void TextureShaderClass::ShutdownShader(OpenGLClass* OpenGL)
 //The SetShaderParameters function now takes an extra input value called textureUnit.
 //This allows us to specify which texture unit to bind so that OpenGL knows which texture to sample in the pixel shader.
 
-bool TextureShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMatrix, float* viewMatrix, float* projectionMatrix, int textureUnit)
+bool LightShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMatrix, float* viewMatrix, float* projectionMatrix, int textureUnit,
+											float* lightDirection, float* diffuseLightColor)
 {
 	unsigned int location;
 
@@ -345,6 +347,22 @@ bool TextureShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMa
 		return false;
 	}
 	OpenGL->glUniform1i(location, textureUnit);
+
+	//Set the light direction in the pixel shader
+	location = OpenGL->glGetUniformLocation(m_shaderProgram, "lightDirection");
+	if(location == -1)
+	{
+		return false;
+	}
+	OpenGL->glUniform3fv(location,1, lightDirection);
+
+	//Set the light direction in the pixel shader
+	location = OpenGL->glGetUniformLocation(m_shaderProgram, "diffuseLighting");
+	if(location == -1)
+	{
+		return false;
+	}
+	OpenGL->glUniform4fv(location, 1, diffuseLightColor);
 
 	return true;
 }

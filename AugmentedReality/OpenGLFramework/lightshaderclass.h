@@ -1,26 +1,26 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: textureshaderclass.h
+// Filename: lightshaderclass.h
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _TEXTURESHADERCLASS_H_
-#define _TEXTURESHADERCLASS_H_
+#ifndef _LIGHTSHADERCLASS_H_
+#define _LIGHTSHADERCLASS_H_
 
 #include <fstream>
 using namespace std;
 
 #include "openglclass.h"
 
-class TextureShaderClass
+class LightShaderClass
 {
 public:
-	TextureShaderClass();
-	TextureShaderClass(const TextureShaderClass&);
-	~TextureShaderClass();
+	LightShaderClass();
+	LightShaderClass(const LightShaderClass&);
+	~LightShaderClass();
 
 	bool Initialize(OpenGLClass*, HWND);
 	void Shutdown(OpenGLClass*);
 	void SetShader(OpenGLClass*);
-	bool SetShaderParameters(OpenGLClass*, float*, float*, float*, int);
+	bool SetShaderParameters(OpenGLClass*, float*, float*, float*, int, float*, float*);
 
 private:
 	bool InitializeShader(char*, char*, OpenGLClass*, HWND);
