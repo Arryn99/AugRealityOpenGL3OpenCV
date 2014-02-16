@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: lightshaderclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
-
 #include "lightshaderclass.h"
 
 
@@ -24,8 +23,9 @@ bool LightShaderClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 {
 	bool result;
 
+
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader("Light.vs", "Light.ps", OpenGL, hwnd);
+	result = InitializeShader("light.vs", "light.ps", OpenGL, hwnd);
 	if(!result)
 	{
 		return false;
@@ -304,11 +304,8 @@ void LightShaderClass::ShutdownShader(OpenGLClass* OpenGL)
 	return;
 }
 
-//The SetShaderParameters function now takes an extra input value called textureUnit.
-//This allows us to specify which texture unit to bind so that OpenGL knows which texture to sample in the pixel shader.
 
-bool LightShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMatrix, float* viewMatrix, float* projectionMatrix, int textureUnit,
-											float* lightDirection, float* diffuseLightColor)
+bool LightShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMatrix, float* viewMatrix, float* projectionMatrix, int textureUnit, float* lightDirection, float* diffuseLightColor)
 {
 	unsigned int location;
 
@@ -337,9 +334,6 @@ bool LightShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMatr
 	}
 	OpenGL->glUniformMatrix4fv(location, 1, false, projectionMatrix);
 
-	//The location in the pixel shader for the shaderTexture variable is obtained here and then the texture unit is set.
-	//The texture can now be sampled in the pixel shader.
-	
 	// Set the texture in the pixel shader to use the data from the first texture unit.
 	location = OpenGL->glGetUniformLocation(m_shaderProgram, "shaderTexture");
 	if(location == -1)
@@ -348,16 +342,16 @@ bool LightShaderClass::SetShaderParameters(OpenGLClass* OpenGL, float* worldMatr
 	}
 	OpenGL->glUniform1i(location, textureUnit);
 
-	//Set the light direction in the pixel shader
+	// Set the light direction in the pixel shader.
 	location = OpenGL->glGetUniformLocation(m_shaderProgram, "lightDirection");
 	if(location == -1)
 	{
 		return false;
 	}
-	OpenGL->glUniform3fv(location,1, lightDirection);
+	OpenGL->glUniform3fv(location, 1, lightDirection);
 
-	//Set the light direction in the pixel shader
-	location = OpenGL->glGetUniformLocation(m_shaderProgram, "diffuseLighting");
+	// Set the light direction in the pixel shader.
+	location = OpenGL->glGetUniformLocation(m_shaderProgram, "diffuseLightColor");
 	if(location == -1)
 	{
 		return false;

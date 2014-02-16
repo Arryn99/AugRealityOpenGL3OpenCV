@@ -27,31 +27,31 @@
     <ClCompile Include="SurfCameraFeed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textureclass.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraClass.cpp">
+    <ClCompile Include="cameraclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="graphicsclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="systemclass.cpp">
+    <ClCompile Include="inputclass.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="lightclass.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="lightshaderclass.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="modelclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="openglclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="ModelClass.cpp">
+    <ClCompile Include="systemclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="inputclass.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="LightClass.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="lightshaderclass.cpp">
+    <ClCompile Include="textureclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,10 +59,7 @@
     <ClInclude Include="SurfCameraFeed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LightClass.h">
-      <Filter>Header Files\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraClass.h">
+    <ClInclude Include="cameraclass.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="graphicsclass.h">
@@ -71,7 +68,13 @@
     <ClInclude Include="inputclass.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="ModelClass.h">
+    <ClInclude Include="lightclass.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="lightshaderclass.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="modelclass.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="openglclass.h">
@@ -83,15 +86,21 @@
     <ClInclude Include="textureclass.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="lightshaderclass.h">
-      <Filter>Header Files\OpenGL</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Light.vs">
+    <None Include="light.ps">
       <Filter>Source Files\OpenGL</Filter>
     </None>
-    <None Include="Light.ps">
+    <None Include="light.vs">
+      <Filter>Source Files\OpenGL</Filter>
+    </None>
+    <None Include="opengl.tga">
+      <Filter>Source Files\OpenGL</Filter>
+    </None>
+    <None Include="shader-error.txt">
+      <Filter>Source Files\OpenGL</Filter>
+    </None>
+    <None Include="test.tga">
       <Filter>Source Files\OpenGL</Filter>
     </None>
   </ItemGroup>

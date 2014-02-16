@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: systemclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
-
 #include "systemclass.h"
 
 
@@ -301,7 +300,7 @@ bool SystemClass::InitializeWindows(OpenGLClass* OpenGL, int& screenWidth, int& 
 	result = m_OpenGL->InitializeOpenGL(m_hwnd, screenWidth, screenHeight, SCREEN_DEPTH, SCREEN_NEAR, VSYNC_ENABLED);
 	if(!result)
 	{
-		MessageBoxW(m_hwnd, L"Could not initialize OpenGL, check if video card supports OpenGL 4.0.", L"Error", MB_OK);
+		MessageBoxW(m_hwnd, L"Could not initialize OpenGL, check if video card supports OpenGL 3.3.", L"Error", MB_OK);
 		return false;
 	}
 

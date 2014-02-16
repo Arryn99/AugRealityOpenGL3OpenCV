@@ -1,10 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: textureclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
-
 #include "textureclass.h"
 
-//The class constructor will initialize the loaded boolean to false so that we know there has not been a texture loaded yet.
+
 TextureClass::TextureClass()
 {
 	loaded = false;
@@ -20,9 +19,7 @@ TextureClass::~TextureClass()
 {
 }
 
-//Initialize takes in the OpenGL pointer, the file name of the texture, the texture unit to load the texture into
-//and a boolean value indicating if the texture should wrap or clamp the colors at the edges. It then loads the targa
-//file into the OpenGL texture unit specified by calling the LoadTarga function. The texture can now be used to render with.
+
 bool TextureClass::Initialize(OpenGLClass* OpenGL, char* filename, unsigned int textureUnit, bool wrap)
 {
 	bool result;
@@ -38,7 +35,7 @@ bool TextureClass::Initialize(OpenGLClass* OpenGL, char* filename, unsigned int 
 	return true;
 }
 
-//The Shutdown function releases the texture resource if it has been loaded.
+
 void TextureClass::Shutdown()
 {
 	// If the texture was loaded then make sure to release it on shutdown.
@@ -51,7 +48,7 @@ void TextureClass::Shutdown()
 	return;
 }
 
-//LoadTarga loads a .tga image onto an OpenGL texture. It also sets up texture filtering, texture wrapping, and mipmaps for the texture.
+
 bool TextureClass::LoadTarga(OpenGLClass* OpenGL, char* filename, unsigned int textureUnit, bool wrap)
 {
 	int error, width, height, bpp, imageSize;
@@ -60,7 +57,6 @@ bool TextureClass::LoadTarga(OpenGLClass* OpenGL, char* filename, unsigned int t
 	TargaHeader targaFileHeader;
 	unsigned char* targaImage;
 
-	//The beginning section loads the .tga file into a buffer called targaImage.
 
 	// Open the targa file for reading in binary.
 	error = fopen_s(&filePtr, filename, "rb");
@@ -110,10 +106,6 @@ bool TextureClass::LoadTarga(OpenGLClass* OpenGL, char* filename, unsigned int t
 	{
 		return false;
 	}
-
-	//Now that the buffer contains the .tga data we create an OpenGL texture object and copy the buffer into that texture object.
-	//Note that .tga have the RGB reversed so in glTextImage2D we need to set the input format as GL_BGRA so it will reverse the
-	//red and blue component for us when loading it in.
 
 	// Set the unique texture unit in which to store the data.
 	OpenGL->glActiveTexture(GL_TEXTURE0 + textureUnit);

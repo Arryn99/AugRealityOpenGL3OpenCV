@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: graphicsclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
-
 #include "graphicsclass.h"
 
 
@@ -51,7 +50,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_OpenGL, "stone.tga", 0, true);
+	result = m_Model->Initialize(m_OpenGL,  "cube.txt", "opengl.tga", 0, true);
 	if(!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -73,18 +72,15 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 		return false;
 	}
 
-	//The light object is created and initialised here.  The colour of the light is set to yellow and
-	//the light direction is set to point down the positive Z axis into the screen.
-
-	//Create the light object
+	// Create the light object.
 	m_Light = new LightClass;
-	if(m_Light)
+	if(!m_Light)
 	{
 		return false;
 	}
 
-	//Initialise the light object
-	m_Light->SetDiffuseColor(1.0f, 1.0f, 0.0f, 1.0f);
+	// Initialize the light object.
+	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 
 	return true;
@@ -100,7 +96,7 @@ void GraphicsClass::Shutdown()
 		m_Light = 0;
 	}
 
-	//Release the light shader object
+	// Release the light shader object.
 	if(m_LightShader)
 	{
 		m_LightShader->Shutdown(m_OpenGL);
@@ -133,12 +129,11 @@ void GraphicsClass::Shutdown()
 bool GraphicsClass::Frame()
 {
 	bool result;
-
-	//static variable to hold an updated rotation value each frame that will be passed into the Render function
 	static float rotation = 0.0f;
 
-	//Update the rotation variable each frame (degrees to radians)
-	rotation +=0.0174532925f * 2.0f;
+
+	// Update the rotation variable each frame.
+	rotation += 0.0174532925f * 2.0f;
 	if(rotation > 360.0f)
 	{
 		rotation -= 360.0f;
@@ -146,7 +141,6 @@ bool GraphicsClass::Frame()
 
 	// Render the graphics scene.
 	result = Render(rotation);
-
 	if(!result)
 	{
 		return false;
@@ -176,19 +170,18 @@ bool GraphicsClass::Render(float rotation)
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_OpenGL->GetProjectionMatrix(projectionMatrix);
 
-	//We obtain the direction and diffuse colour of the light here
-	//Get the light properties
+	// Get the light properties.
 	m_Light->GetDirection(lightDirection);
 	m_Light->GetDiffuseColor(diffuseLightColor);
 
-	//Rotate the world matrix by the rotation value so that the triangle will spin.
+	// Rotate the world matrix by the rotation value so that the triangle will spin.
 	m_OpenGL->MatrixRotationY(worldMatrix, rotation);
 
 	// Set the light shader as the current shader program and set the matrices that it will use for rendering.
 	m_LightShader->SetShader(m_OpenGL);
 	m_LightShader->SetShaderParameters(m_OpenGL, worldMatrix, viewMatrix, projectionMatrix, 0, lightDirection, diffuseLightColor);
 
-	// Render the model using the texture shader.
+	// Render the model using the light shader.
 	m_Model->Render(m_OpenGL);
 	
 	// Present the rendered scene to the screen.

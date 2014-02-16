@@ -1,0 +1,67 @@
+////////////////////////////////////////////////////////////////////////////////
+// Filename: Light.ps
+//The pixel shader has a uniform variable called shaderTexture. This is a texture sampler that
+//allows us to access the targa image that was loaded into the OpenGL texture. To access it the pixel shader
+//uses a new function called "texture" which samples the pixel from the shaderTexture using the input texture
+//coordinates from the vertex shader. OpenGL takes care of interpolating the texture coordinates to match
+//up with the current pixel that we are drawing on the screen. Once the pixel is sampled from the texture using the
+//texture coordinates it is then returned as the final output pixel color.
+////////////////////////////////////////////////////////////////////////////////
+
+#version 330
+
+
+/////////////////////
+// INPUT VARIABLES //
+/////////////////////
+in vec2 texCoord;
+in vec3 normal;
+
+
+//////////////////////
+// OUTPUT VARIABLES //
+//////////////////////
+out vec4 outputColor;
+
+///////////////////////
+// UNIFORM VARIABLES //
+///////////////////////
+uniform sampler2D shaderTexture;
+
+//These variables are used for sending as input the diffuse color and direction of the light.
+//These two variables will be set from values in the new LightClass object that are then sent in through the LightShaderClass.
+uniform vec3 lightDirection;
+uniform vec4 diffuseLightColor;
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Pixel Shader
+////////////////////////////////////////////////////////////////////////////////
+void main(void)
+{
+	vec4 textureColor;
+	vec3 lightDir;
+	float lightIntensity;
+
+
+	// Sample the pixel color from the texture using the sampler at this texture coordinate location.
+	textureColor = texture(shaderTexture, texCoord);
+
+
+	//This is where the lighting equation is implemented. The light intensity value is calculated as the dot product between the normal vector of triangle
+	//and the light direction vector. The clamp function is surrounding the equation is used to keep it in the 0.0f to 1.0f range. We also combine the
+	//diffuse light color after the intensity has been calculated by multiplying the two values together and once again clamping them into the 0.0f to 1.0f range.
+
+	//Invert the light direction for calculations
+	lightDir =-lightDirection;
+	
+	//Calculate the amount of light on this pixel
+	lightIntensity = clamp(dot(normal, lightDir), 0.0f, 1.0f);
+
+	//Determine the final amount of diffuse colour based on the diffuse colour combined with the light intensity
+	outputColor = clamp((diffuseLightColor * lightIntensity), 0.0f, 1.0f);
+
+	//Finally, the diffuse value of the light is combined with the texture pixel value to produce the colour result
+	//Multiply the texture pixel and the final diffuse colour to get the final pixel colour result
+	outputColor = outputColor * textureColor;
+}

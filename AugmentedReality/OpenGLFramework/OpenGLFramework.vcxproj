@@ -11,33 +11,36 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CameraClass.cpp" />
+    <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
-    <ClCompile Include="LightClass.cpp" />
+    <ClCompile Include="lightclass.cpp" />
+    <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ModelClass.cpp" />
+    <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="openglclass.cpp" />
     <ClCompile Include="SurfCameraFeed.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
-    <ClCompile Include="lightshaderclass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraClass.h" />
+    <ClInclude Include="cameraclass.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
-    <ClInclude Include="LightClass.h" />
-    <ClInclude Include="ModelClass.h" />
+    <ClInclude Include="lightclass.h" />
+    <ClInclude Include="lightshaderclass.h" />
+    <ClInclude Include="modelclass.h" />
     <ClInclude Include="openglclass.h" />
     <ClInclude Include="SurfCameraFeed.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureclass.h" />
-    <ClInclude Include="lightshaderclass.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Light.ps" />
-    <None Include="Light.vs" />
+    <None Include="light.ps" />
+    <None Include="light.vs" />
+    <None Include="opengl.tga" />
+    <None Include="shader-error.txt" />
+    <None Include="test.tga" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{55578189-0D30-4B0B-93DD-D642358294F6}</ProjectGuid>

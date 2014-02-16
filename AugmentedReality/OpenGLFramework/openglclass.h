@@ -1,16 +1,27 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: openglclass.h
 ////////////////////////////////////////////////////////////////////////////////
-
 #ifndef _OPENGLCLASS_H_
 #define _OPENGLCLASS_H_
 
+
+/////////////
+// LINKING //
+/////////////
 #pragma comment(lib, "opengl32.lib")
 
+
+//////////////
+// INCLUDES //
+//////////////
 #include <windows.h>
 #include <gl\gl.h>
 #include <math.h>
 
+
+/////////////
+// DEFINES //
+/////////////
 #define WGL_DRAW_TO_WINDOW_ARB         0x2001
 #define WGL_ACCELERATION_ARB           0x2003
 #define WGL_SWAP_METHOD_ARB            0x2007
@@ -36,6 +47,10 @@
 #define GL_BGRA                           0x80E1
 #define GL_ELEMENT_ARRAY_BUFFER           0x8893
 
+
+//////////////
+// TYPEDEFS //
+//////////////
 typedef BOOL (WINAPI * PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
 typedef HGLRC (WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int *attribList);
 typedef BOOL (WINAPI * PFNWGLSWAPINTERVALEXTPROC) (int interval);
@@ -73,6 +88,10 @@ typedef void (APIENTRY * PFNGLDISABLEVERTEXATTRIBARRAYPROC) (GLuint index);
 typedef void (APIENTRY * PFNGLUNIFORM3FVPROC) (GLint location, GLsizei count, const GLfloat *value);
 typedef void (APIENTRY * PFNGLUNIFORM4FVPROC) (GLint location, GLsizei count, const GLfloat *value);
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Class name: OpenGLClass
+////////////////////////////////////////////////////////////////////////////////
 class OpenGLClass
 {
 public:
