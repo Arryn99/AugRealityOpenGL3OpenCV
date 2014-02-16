@@ -9,9 +9,12 @@
 using namespace cv;
 using namespace std;
 
+
+int openCV();
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
-	OpenCVCamera();
+	//OpenCVCamera();	
 
 	SystemClass* System;
 	bool result;
@@ -42,7 +45,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 int openCV(){
 	/////////OPENCV
 	Mat image;
-	image = imread("logo.png", CV_LOAD_IMAGE_COLOR);   // Read the file
+	image = imread("Photo3.jpg", CV_LOAD_IMAGE_COLOR);   // Read the file
 
 	if(! image.data )                              // Check for invalid input
 	{
@@ -50,8 +53,8 @@ int openCV(){
 		return -1;
 	}
 
-	namedWindow( "Display window", CV_WINDOW_AUTOSIZE );// Create a window for display.
-	imshow( "Display window", image );                   // Show our image inside it.
+	//namedWindow( "Display window", CV_WINDOW_AUTOSIZE );// Create a window for display.
+	imshow("E", image );                   // Show our image inside it.
 
 	waitKey(0);                                          // Wait for a keystroke in the window
 	return 0;

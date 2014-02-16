@@ -54,6 +54,9 @@
     <ClCompile Include="textureclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessQuad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SurfCameraFeed.h">
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="textureclass.h">
       <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessQuad.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

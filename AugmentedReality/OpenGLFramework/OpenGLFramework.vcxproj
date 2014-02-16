@@ -19,6 +19,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="openglclass.cpp" />
+    <ClCompile Include="PostProcessQuad.cpp" />
     <ClCompile Include="SurfCameraFeed.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
@@ -31,6 +32,7 @@
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="openglclass.h" />
+    <ClInclude Include="PostProcessQuad.h" />
     <ClInclude Include="SurfCameraFeed.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureclass.h" />
