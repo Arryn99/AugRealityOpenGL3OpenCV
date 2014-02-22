@@ -19,10 +19,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="openglclass.cpp" />
-    <ClCompile Include="PostProcessQuad.cpp" />
+    <ClCompile Include="ScreenQuad.cpp" />
+    <ClCompile Include="ScreenTexture.cpp" />
+    <ClCompile Include="ScreenTextureShader.cpp" />
     <ClCompile Include="SurfCameraFeed.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
+    <ClCompile Include="Webcam.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraclass.h" />
@@ -32,10 +35,13 @@
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="openglclass.h" />
-    <ClInclude Include="PostProcessQuad.h" />
+    <ClInclude Include="ScreenQuad.h" />
+    <ClInclude Include="ScreenTexture.h" />
+    <ClInclude Include="ScreenTextureShader.h" />
     <ClInclude Include="SurfCameraFeed.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureclass.h" />
+    <ClInclude Include="Webcam.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="light.ps" />
@@ -43,6 +49,8 @@
     <None Include="opengl.tga" />
     <None Include="shader-error.txt" />
     <None Include="test.tga" />
+    <None Include="texture.ps" />
+    <None Include="texture.vs" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{55578189-0D30-4B0B-93DD-D642358294F6}</ProjectGuid>

@@ -11,6 +11,11 @@ GraphicsClass::GraphicsClass()
 	m_Model = 0;
 	m_LightShader = 0;
 	m_Light = 0;
+	
+	m_ScreenQuad = 0;
+	m_ScreenTextureShader = 0;
+
+	m_videoCapture = VideoCapture(0);
 }
 
 
@@ -41,6 +46,33 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 
 	// Set the initial position of the camera.
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+
+	////////////////
+	// Create the screen quad.
+	m_ScreenQuad = new ScreenQuad;
+	if(!m_ScreenQuad)
+	{
+		return false;
+	}
+
+	m_ScreenQuad->InitialiseCamera(m_OpenGL);
+	
+	
+	// Create the texture shader object.
+	m_ScreenTextureShader = new ScreenTextureShader;
+	if(!m_ScreenTextureShader)
+	{
+		return false;
+	}
+
+	// Initialize the texture shader object.
+	result = m_ScreenTextureShader->Initialize(m_OpenGL, hwnd);
+	if(!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
+		return false;
+	}
+	////////////////
 
 	// Create the model object.
 	m_Model = new ModelClass;
@@ -89,6 +121,23 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
+
+	// Release the texture shader object.
+	if(m_ScreenTextureShader)
+	{
+		m_ScreenTextureShader->Shutdown(m_OpenGL);
+		delete m_ScreenTextureShader;
+		m_ScreenTextureShader = 0;
+	}
+
+	// Release the screen quad
+	if(m_ScreenQuad)
+	{
+		m_ScreenQuad->Shutdown(m_OpenGL);
+		delete m_ScreenQuad;
+		m_ScreenQuad = 0;
+	}
+
 	// Release the light object.
 	if(m_Light)
 	{
@@ -158,12 +207,33 @@ bool GraphicsClass::Render(float rotation)
 	float lightDirection[3];
 	float diffuseLightColor[4];
 
+	 Mat frame;
+     m_videoCapture >> frame;
 
 	// Clear the buffers to begin the scene.
 	m_OpenGL->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
+
+	Mat object = imread( "test.tga", CV_LOAD_IMAGE_GRAYSCALE );
+
+	if (frame.rows > 0) {
+	m_ScreenQuad->CopyFrame(m_OpenGL, object);
+	}
+
+	// Set the texture shader as the current shader program and set the matrices that it will use for rendering.
+	m_ScreenTextureShader->SetShader(m_OpenGL);
+	m_ScreenTextureShader->SetShaderParameters(m_OpenGL, worldMatrix, viewMatrix, projectionMatrix, 0);
+
+	//disable depth test
+	glDisable(GL_DEPTH_TEST);
+
+	// Render the model using the texture shader.
+	m_ScreenQuad->Render(m_OpenGL);
+
+	//enable depth test
+	glEnable(GL_DEPTH_TEST);
 
 	// Get the world, view, and projection matrices from the opengl and camera objects.
 	m_OpenGL->GetWorldMatrix(worldMatrix);
