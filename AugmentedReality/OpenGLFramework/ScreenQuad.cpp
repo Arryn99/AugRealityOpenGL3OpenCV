@@ -113,32 +113,32 @@ bool ScreenQuad::InitializeBuffers(OpenGLClass* OpenGL)
 	vertices[0].y = -1.0f;
 	vertices[0].z =  0.0f;
 
-	vertices[0].tu = 0.0f;  // Texture coordinates.
-	vertices[0].tv = 0.0f;
+	vertices[0].tu = 1.0f;  // Texture coordinates.
+	vertices[0].tv = 1.0f;
 
 	// Top left.
 	vertices[1].x = -1.0f;  // Position.
 	vertices[1].y = 1.0f;
 	vertices[1].z = 0.0f;
 
-	vertices[1].tu = 0.0f;  // Texture coordinates.
-	vertices[1].tv = 1.0f;
+	vertices[1].tu = 1.0f;  // Texture coordinates.
+	vertices[1].tv = 0.0f;
 
 	// Bottom right.
 	vertices[2].x =  1.0f;  // Position.
 	vertices[2].y = -1.0f;
 	vertices[2].z =  0.0f;
 
-	vertices[2].tu = 1.0f;  // Texture coordinates.
-	vertices[2].tv = 0.0f;
+	vertices[2].tu = 0.0f;  // Texture coordinates.
+	vertices[2].tv = 1.0f;
 
 	// Top right.
 	vertices[3].x = 1.0f;  // Position.
 	vertices[3].y = 1.0f;
 	vertices[3].z = 0.0f;
 
-	vertices[3].tu = 1.0f;  // Texture coordinates.
-	vertices[3].tv = 1.0f;
+	vertices[3].tu = 0.0f;  // Texture coordinates.
+	vertices[3].tv = 0.0f;
 
 	// Load the index array with data.
 	indices[0] = 0;  // Bottom left.
@@ -148,6 +148,7 @@ bool ScreenQuad::InitializeBuffers(OpenGLClass* OpenGL)
 	indices[3] = 2;  // Bottom right.
 	indices[4] = 1;  // Top left.
 	indices[5] = 3;  // Top right.
+
 
 	// Allocate an OpenGL vertex array object.
 	OpenGL->glGenVertexArrays(1, &m_vertexArrayId);
