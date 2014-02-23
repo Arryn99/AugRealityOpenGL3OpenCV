@@ -147,3 +147,42 @@ bool TextureClass::LoadTarga(OpenGLClass* OpenGL, char* filename, unsigned int t
 
 	return true;
 }
+
+
+bool TextureClass::Initialize(OpenGLClass* OpenGL, unsigned int textureUnit, bool wrap){
+
+	
+	OpenGL->glActiveTexture(GL_TEXTURE0 + 0);
+
+	// Generate an ID for the texture.
+	glGenTextures(1, &m_textureID);
+
+	// Bind the texture as a 2D texture.
+	glBindTexture(GL_TEXTURE_2D, m_textureID);
+	return true;
+}
+
+bool TextureClass::loadMatIntoTexture(OpenGLClass*OpenGL, Mat& mat){
+	// Set the unique texture unit in which to store the data.
+	OpenGL->glActiveTexture(GL_TEXTURE0 + 0);
+
+	// Bind the texture as a 2D texture.
+	glBindTexture(GL_TEXTURE_2D, m_textureID);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	// 2d texture, level of detail 0 (normal), 3 components (red, green, blue), x size from image, y size from image,
+	// border 0 (normal), rgb color data, unsigned byte data, and finally the data itself.
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mat.cols, mat.rows, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, mat.data);
+
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	
+	// Set the texture filtering.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	// Generate mipmaps for the texture.
+	OpenGL->glGenerateMipmap(GL_TEXTURE_2D);
+	return true;
+}

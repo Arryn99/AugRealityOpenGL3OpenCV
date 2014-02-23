@@ -2,7 +2,7 @@
 // Filename: graphicsclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "graphicsclass.h"
-
+#include <opencv2\core\core.hpp>
 
 GraphicsClass::GraphicsClass()
 {
@@ -55,7 +55,10 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 		return false;
 	}
 
-	m_ScreenQuad->InitialiseCamera(m_OpenGL);
+
+	Mat object = imread("Photo2.jpg");
+	cv::flip(object, object, 0);
+	m_ScreenQuad->Initialize(m_OpenGL, object, 0, false);
 	
 	
 	// Create the texture shader object.
@@ -82,7 +85,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_OpenGL,  "cube.txt", "opengl.tga", 0, true);
+	result = m_Model->Initialize(m_OpenGL,  "cube.txt", "opengl.tga", 1, true);
 	if(!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -207,20 +210,16 @@ bool GraphicsClass::Render(float rotation)
 	float lightDirection[3];
 	float diffuseLightColor[4];
 
-	 Mat frame;
-     m_videoCapture >> frame;
+
 
 	// Clear the buffers to begin the scene.
 	m_OpenGL->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
-
-	Mat object = imread( "test.tga", CV_LOAD_IMAGE_GRAYSCALE );
-
-	if (frame.rows > 0) {
-	m_ScreenQuad->CopyFrame(m_OpenGL, object);
-	}
+	Mat frame;
+	m_videoCapture >> frame;
+	m_ScreenQuad->updateTexture(m_OpenGL, frame);
 
 	// Set the texture shader as the current shader program and set the matrices that it will use for rendering.
 	m_ScreenTextureShader->SetShader(m_OpenGL);
@@ -249,7 +248,7 @@ bool GraphicsClass::Render(float rotation)
 
 	// Set the light shader as the current shader program and set the matrices that it will use for rendering.
 	m_LightShader->SetShader(m_OpenGL);
-	m_LightShader->SetShaderParameters(m_OpenGL, worldMatrix, viewMatrix, projectionMatrix, 0, lightDirection, diffuseLightColor);
+	m_LightShader->SetShaderParameters(m_OpenGL, worldMatrix, viewMatrix, projectionMatrix, 1, lightDirection, diffuseLightColor);
 
 	// Render the model using the light shader.
 	m_Model->Render(m_OpenGL);

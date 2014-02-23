@@ -23,23 +23,8 @@ ScreenQuad::~ScreenQuad()
 {
 }
 
-int ScreenQuad::InitialiseCamera(OpenGLClass* OpenGL) {
-	m_ScreenTexture = new ScreenTexture;
-	
-	if(!m_ScreenTexture)
-	{
-		return false;
-	}
 
-	m_ScreenTexture->createCameraTexture(OpenGL, 0);
-}
-
-void ScreenQuad::CopyFrame(OpenGLClass* OpenGL, Mat &cameraFrame) {
-	m_ScreenTexture->loadFrameIntoTexture(OpenGL, cameraFrame, 0);
-}
-
-
-bool ScreenQuad::Initialize(OpenGLClass* OpenGL, char* textureFilename, unsigned int textureUnit, bool wrap)
+bool ScreenQuad::Initialize(OpenGLClass* OpenGL, Mat& textureFilename, unsigned int textureUnit, bool wrap)
 {
 	bool result;
 
@@ -51,14 +36,26 @@ bool ScreenQuad::Initialize(OpenGLClass* OpenGL, char* textureFilename, unsigned
 		return false;
 	}
 
-	// Load the texture for this model.
-	result = LoadTexture(OpenGL, textureFilename, textureUnit, wrap);
-	if(!result)
+	// Create the texture object.
+	m_ScreenTexture = new TextureClass;
+	if (!m_ScreenTexture)
+	{
+		return false;
+	}
+
+	// Initialize the texture object.
+	result = m_ScreenTexture->Initialize(OpenGL, textureUnit, wrap);
+	
+	if (!result)
 	{
 		return false;
 	}
 
 	return true;
+}
+
+void ScreenQuad::updateTexture(OpenGLClass* OpenGL, Mat& textureFilename ){
+	m_ScreenTexture->loadMatIntoTexture(OpenGL, textureFilename);
 }
 
 
@@ -235,7 +232,7 @@ bool ScreenQuad::LoadTexture(OpenGLClass* OpenGL, char* textureFilename, unsigne
 
 
 	// Create the texture object.
-	m_ScreenTexture = new ScreenTexture;
+	m_ScreenTexture = new TextureClass;
 	if(!m_ScreenTexture)
 	{
 		return false;

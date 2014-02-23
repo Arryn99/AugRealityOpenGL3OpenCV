@@ -15,7 +15,8 @@
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "openglclass.h"
-
+#include <opencv2\core\core.hpp>
+using namespace cv;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: TextureClass
@@ -38,6 +39,8 @@ public:
 	~TextureClass();
 
 	bool Initialize(OpenGLClass*, char*, unsigned int, bool);
+	bool Initialize(OpenGLClass*, unsigned int, bool);
+	bool loadMatIntoTexture(OpenGLClass*, Mat& mat);
 	void Shutdown();
 
 private:

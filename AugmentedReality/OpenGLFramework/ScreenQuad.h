@@ -4,7 +4,7 @@
 #ifndef _ScreenQuad_H_
 #define _ScreenQuad_H_
 
-#include "ScreenTexture.h"
+#include "Textureclass.h"
 
 class ScreenQuad
 {
@@ -20,15 +20,13 @@ public:
 	ScreenQuad(const ScreenQuad&);
 	~ScreenQuad();
 
-	bool Initialize(OpenGLClass*, char*, unsigned int, bool);
+	bool Initialize(OpenGLClass*, Mat&, unsigned int, bool);
 	void Shutdown(OpenGLClass*);
 	void Render(OpenGLClass*);
 
-	void CopyFrame(OpenGLClass* OpenGL, Mat &cameraFrame);
-	int InitialiseCamera(OpenGLClass* OpenGL);
+	void updateTexture(OpenGLClass* OpenGL, Mat& textureFilename);
 
-protected:
-	ScreenTexture* m_ScreenTexture;
+	int InitialiseCamera(OpenGLClass* OpenGL);
 
 private:
 	bool InitializeBuffers(OpenGLClass*);
@@ -41,7 +39,7 @@ private:
 private:
 	int m_vertexCount, m_indexCount;
 	unsigned int m_vertexArrayId, m_vertexBufferId, m_indexBufferId;
-	
+	TextureClass* m_ScreenTexture;
 };
 
 #endif
