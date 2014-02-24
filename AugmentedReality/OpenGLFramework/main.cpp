@@ -9,16 +9,13 @@
 using namespace cv;
 using namespace std;
 
-
-int openCV();
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
-	//OpenCVCamera();	
+	OpenCVCamera();	
 
 	SystemClass* System;
 	bool result;
-	
+	//int counter = 0;
 	
 	// Create the system object.
 	System = new SystemClass;

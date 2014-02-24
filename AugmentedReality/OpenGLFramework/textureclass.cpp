@@ -170,6 +170,7 @@ bool TextureClass::loadMatIntoTexture(OpenGLClass*OpenGL, Mat& mat){
 	glBindTexture(GL_TEXTURE_2D, m_textureID);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
 	// 2d texture, level of detail 0 (normal), 3 components (red, green, blue), x size from image, y size from image,
 	// border 0 (normal), rgb color data, unsigned byte data, and finally the data itself.
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mat.cols, mat.rows, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, mat.data);

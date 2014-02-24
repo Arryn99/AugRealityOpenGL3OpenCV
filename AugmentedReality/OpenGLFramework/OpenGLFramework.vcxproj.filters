@@ -19,17 +19,17 @@
     <Filter Include="Source Files\OpenGL">
       <UniqueIdentifier>{96b8017a-bdae-40b7-8f78-3c0cd85b34be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\OpenGL\Screen">
-      <UniqueIdentifier>{9597b33e-b684-4377-a4b5-f3d9c8770ae0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\OpenGL\Screen">
-      <UniqueIdentifier>{49934b28-e5cc-4510-87f9-e837a103a9fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\OpenCV">
       <UniqueIdentifier>{ac126846-ee4b-4f8a-bc2e-476db6cbbc98}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\OpenCV">
       <UniqueIdentifier>{83967895-caeb-4a02-9e7c-4c5d6aa8edbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Screen">
+      <UniqueIdentifier>{9597b33e-b684-4377-a4b5-f3d9c8770ae0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Screen">
+      <UniqueIdentifier>{49934b28-e5cc-4510-87f9-e837a103a9fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,15 +64,12 @@
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="ScreenQuad.cpp">
-      <Filter>Source Files\OpenGL\Screen</Filter>
+      <Filter>Source Files\Screen</Filter>
     </ClCompile>
     <ClCompile Include="ScreenTextureShader.cpp">
-      <Filter>Source Files\OpenGL\Screen</Filter>
+      <Filter>Source Files\Screen</Filter>
     </ClCompile>
     <ClCompile Include="SurfCameraFeed.cpp">
-      <Filter>Source Files\OpenCV</Filter>
-    </ClCompile>
-    <ClCompile Include="Webcam.cpp">
       <Filter>Source Files\OpenCV</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,15 +102,12 @@
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="ScreenQuad.h">
-      <Filter>Header Files\OpenGL\Screen</Filter>
+      <Filter>Header Files\Screen</Filter>
     </ClInclude>
     <ClInclude Include="ScreenTextureShader.h">
-      <Filter>Header Files\OpenGL\Screen</Filter>
+      <Filter>Header Files\Screen</Filter>
     </ClInclude>
     <ClInclude Include="SurfCameraFeed.h">
-      <Filter>Header Files\OpenCV</Filter>
-    </ClInclude>
-    <ClInclude Include="Webcam.h">
       <Filter>Header Files\OpenCV</Filter>
     </ClInclude>
   </ItemGroup>

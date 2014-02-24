@@ -2,7 +2,7 @@
 // Filename: ScreenQuad.cpp
 //
 // This class sets a quad to be the size of the window
-// It will be set to the rear of the program and used to draw all the OpenCV stuff
+// It will be set to the rear of the program and used to draw the OpenCV camera feed behind the model
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "ScreenQuad.h"
