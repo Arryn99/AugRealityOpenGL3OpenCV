@@ -118,6 +118,9 @@ void SystemClass::Run()
 	
 	// Loop until there is a quit message from the window or the user.
 	done = false;
+
+	int frameCount = 0;
+
 	while(!done)
 	{
 		// Handle the windows messages.
@@ -135,7 +138,9 @@ void SystemClass::Run()
 		else
 		{
 			// Otherwise do the frame processing.
-			result = Frame();
+			result = Frame(frameCount);
+			frameCount++;
+
 			if(!result)
 			{
 				done = true;
@@ -148,7 +153,7 @@ void SystemClass::Run()
 }
 
 
-bool SystemClass::Frame()
+bool SystemClass::Frame(int frameCount)
 {
 	bool result;
 
@@ -160,7 +165,7 @@ bool SystemClass::Frame()
 	}
 
 	// Do the frame processing for the graphics object.
-	result = m_Graphics->Frame();
+	result = m_Graphics->Frame(frameCount);
 	if(!result)
 	{
 		return false;

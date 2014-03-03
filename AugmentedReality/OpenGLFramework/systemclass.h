@@ -35,6 +35,7 @@ public:
 	SystemClass(const SystemClass&);
 	~SystemClass();
 
+	//these 3 functions are called once
 	bool Initialize();
 	void Shutdown();
 	void Run();
@@ -42,7 +43,8 @@ public:
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 private:
-	bool Frame();
+	//called every single frame
+	bool Frame(int frameCount);
 	bool InitializeWindows(OpenGLClass*, int&, int&);
 	void ShutdownWindows();
 

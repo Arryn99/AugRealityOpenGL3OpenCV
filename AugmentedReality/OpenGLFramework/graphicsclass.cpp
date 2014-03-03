@@ -178,7 +178,7 @@ void GraphicsClass::Shutdown()
 }
 
 
-bool GraphicsClass::Frame()
+bool GraphicsClass::Frame(int frameCount)
 {
 	bool result;
 	static float rotation = 0.0f;
@@ -189,10 +189,14 @@ bool GraphicsClass::Frame()
 	if(rotation > 360.0f)
 	{
 		rotation -= 360.0f;
-	}
+	} 
 
+	if (frameCount % 5 == 0) {
+		m_videoCapture >> cameraFrame;
+	}
 	// Render the graphics scene.
 	result = Render(rotation);
+
 	if(!result)
 	{
 		return false;
@@ -217,9 +221,7 @@ bool GraphicsClass::Render(float rotation)
 
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
-	Mat frame;
-	m_videoCapture >> frame;
-	m_ScreenQuad->updateTexture(m_OpenGL, frame);
+	m_ScreenQuad->updateTexture(m_OpenGL, cameraFrame);
 
 	// Set the texture shader as the current shader program and set the matrices that it will use for rendering.
 	m_ScreenTextureShader->SetShader(m_OpenGL);

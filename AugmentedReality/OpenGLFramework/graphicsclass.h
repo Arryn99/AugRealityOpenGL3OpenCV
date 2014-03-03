@@ -30,10 +30,10 @@ public:
 
 	bool Initialize(OpenGLClass*, HWND);
 	void Shutdown();
-	bool Frame();
+	bool Frame(int frameCount);
 
 private:
-	bool Render(float);
+	bool Render(float rotation);
 
 private:
 	OpenGLClass* m_OpenGL;
@@ -46,6 +46,8 @@ private:
 	ScreenTextureShader* m_ScreenTextureShader;
 
 	VideoCapture m_videoCapture;
+
+	Mat cameraFrame;	//updated every 5 frames to hold the camera feed image
 };
 
 #endif
