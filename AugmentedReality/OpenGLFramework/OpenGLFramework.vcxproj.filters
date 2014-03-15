@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Screen">
       <UniqueIdentifier>{49934b28-e5cc-4510-87f9-e837a103a9fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\OpenGL\Legacy">
+      <UniqueIdentifier>{9d513955-108b-4d54-88da-2050c896d1a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenGL\Legacy">
+      <UniqueIdentifier>{5ef97e2e-5ac0-4570-a60a-7786e360b440}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,9 +57,6 @@
     <ClCompile Include="lightshaderclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="modelclass.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="openglclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
@@ -72,6 +75,18 @@
     <ClCompile Include="SurfCameraFeed.cpp">
       <Filter>Source Files\OpenCV</Filter>
     </ClCompile>
+    <ClCompile Include="modelclass.cpp">
+      <Filter>Source Files\OpenGL\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="TokenStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vec3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraclass.h">
@@ -87,9 +102,6 @@
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="lightshaderclass.h">
-      <Filter>Header Files\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="modelclass.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="openglclass.h">
@@ -109,6 +121,21 @@
     </ClInclude>
     <ClInclude Include="SurfCameraFeed.h">
       <Filter>Header Files\OpenCV</Filter>
+    </ClInclude>
+    <ClInclude Include="modelclass.h">
+      <Filter>Header Files\OpenGL\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="SOIL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TokenStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

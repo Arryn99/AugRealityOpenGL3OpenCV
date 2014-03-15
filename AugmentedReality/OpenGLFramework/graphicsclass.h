@@ -12,6 +12,8 @@
 #include "ScreenQuad.h"
 #include "ScreenTextureShader.h"
 
+#include "Model.h"
+
 #include <opencv2\highgui\highgui.hpp>
 
 using namespace cv;
@@ -48,6 +50,8 @@ private:
 	VideoCapture m_videoCapture;
 
 	Mat cameraFrame;	//updated every 5 frames to hold the camera feed image
+
+	Model m_model;
 };
 
 #endif

@@ -77,6 +77,8 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 	////////////////
 
+	m_model.Initialise("Models/drone.obj", "Models/EvilDrone_Diff.jpg");
+
 	// Create the model object.
 	m_Model = new ModelClass;
 	if(!m_Model)
@@ -252,6 +254,7 @@ bool GraphicsClass::Render(float rotation)
 	m_LightShader->SetShader(m_OpenGL);
 	m_LightShader->SetShaderParameters(m_OpenGL, worldMatrix, viewMatrix, projectionMatrix, 1, lightDirection, diffuseLightColor);
 
+	m_model.Render();
 	// Render the model using the light shader.
 	m_Model->Render(m_OpenGL);
 	
