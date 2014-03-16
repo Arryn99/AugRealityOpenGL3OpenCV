@@ -77,7 +77,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 	////////////////
 
-	m_model.Initialise("Models/drone.obj", "Models/EvilDrone_Diff.jpg");
+	//m_model.Initialise("Models/drone.obj", "Models/EvilDrone_Diff.jpg");
 
 	// Create the model object.
 	m_Model = new ModelClass;
@@ -88,6 +88,20 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 
 	// Initialize the model object.
 	result = m_Model->Initialize(m_OpenGL,  "cube.txt", "opengl.tga", 1, true);
+	if(!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_ObjModel = new ModelClass;
+	if(!m_ObjModel)
+	{
+		return false;
+	}
+
+	// Initialize the model object.
+	result = m_ObjModel->InitializeObj(m_OpenGL,  "Models/drone.obj", "opengl.tga", 1, true);
 	if(!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -254,9 +268,9 @@ bool GraphicsClass::Render(float rotation)
 	m_LightShader->SetShader(m_OpenGL);
 	m_LightShader->SetShaderParameters(m_OpenGL, worldMatrix, viewMatrix, projectionMatrix, 1, lightDirection, diffuseLightColor);
 
-	m_model.Render();
+	m_ObjModel->Render(m_OpenGL);
 	// Render the model using the light shader.
-	m_Model->Render(m_OpenGL);
+	//m_Model->Render(m_OpenGL);
 	
 	// Present the rendered scene to the screen.
 	m_OpenGL->EndScene();

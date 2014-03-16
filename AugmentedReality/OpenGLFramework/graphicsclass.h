@@ -1,6 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: graphicsclass.h
-////////////////////////////////////////////////////////////////////////////////
 #ifndef _GRAPHICSCLASS_H_
 #define _GRAPHICSCLASS_H_
 
@@ -11,8 +8,6 @@
 #include "lightclass.h"
 #include "ScreenQuad.h"
 #include "ScreenTextureShader.h"
-
-#include "Model.h"
 
 #include <opencv2\highgui\highgui.hpp>
 
@@ -50,8 +45,7 @@ private:
 	VideoCapture m_videoCapture;
 
 	Mat cameraFrame;	//updated every 5 frames to hold the camera feed image
-
-	Model m_model;
+	ModelClass* m_ObjModel;
 };
 
 #endif

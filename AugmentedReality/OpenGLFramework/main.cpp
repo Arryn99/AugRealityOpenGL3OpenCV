@@ -11,7 +11,9 @@ using namespace std;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
-	//OpenCVCamera();	
+
+	SurfCameraFeed surfInstance;
+	surfInstance.OpenCVCameraInit();	
 
 	SystemClass* System;
 	bool result;

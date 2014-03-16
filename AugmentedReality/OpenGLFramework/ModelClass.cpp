@@ -2,7 +2,8 @@
 // Filename: modelclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "modelclass.h"
-
+#include "TokenStream.h"
+#include "Vec3.h"
 
 ModelClass::ModelClass()
 {
@@ -50,6 +51,34 @@ bool ModelClass::Initialize(OpenGLClass* OpenGL, char* modelFilename, char* text
 	return true;
 }
 
+bool ModelClass::InitializeObj(OpenGLClass* OpenGL, char* modelFilename, char* textureFilename, unsigned int textureUnit, bool wrap)
+	{
+	bool result;
+
+
+	// Load in the model data.
+	result = LoadObjModel(modelFilename);
+	if(!result)
+	{
+		return false;
+	}
+
+	// Initialize the vertex and index buffers that hold the geometry for the model.
+	result = InitializeBuffers(OpenGL);
+	if(!result)
+	{
+		return false;
+	}
+
+	// Load the texture for this model.
+	result = LoadTexture(OpenGL, textureFilename, textureUnit, wrap);
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
 
 void ModelClass::Shutdown(OpenGLClass* OpenGL)
 {
@@ -287,6 +316,152 @@ bool ModelClass::LoadModel(char* filename)
 	fin.close();
 
 	return true;
+}
+
+bool ModelClass::LoadObjModel(char* filename)
+{
+	std::ifstream fileStream;
+    int fileSize = 0;
+
+    fileStream.open( filename, std::ifstream::in );
+   
+    if( fileStream.is_open( ) == false )
+        return false;
+
+    fileStream.seekg( 0, std::ios::end );
+    fileSize = ( int )fileStream.tellg( );
+    fileStream.seekg( 0, std::ios::beg );
+
+    if( fileSize <= 0 )
+        return false;
+
+    char *buffer = new char[fileSize];
+
+    if( buffer == 0 )
+        return false;
+
+    memset( buffer, '\0', fileSize );
+
+    TokenStream tokenStream, lineStream, faceStream;
+    std::string tempLine, token;
+
+    fileStream.read( buffer, fileSize );
+    tokenStream.SetTokenStream( buffer );
+
+    delete[] buffer;
+
+    tokenStream.ResetStream( );
+
+	float tempx, tempy, tempz;
+    std::vector<Vec3> verts, norms, texC;
+    std::vector<int> faces;
+	
+
+    char lineDelimiters[2] = { '\n', ' ' };
+
+    while( tokenStream.MoveToNextLine( &tempLine ) )
+    {
+        lineStream.SetTokenStream( ( char* )tempLine.c_str( ) );
+        tokenStream.GetNextToken( 0, 0, 0 );
+
+        if( !lineStream.GetNextToken( &token, lineDelimiters, 2 ) )
+            continue;
+
+        if( strcmp( token.c_str( ), "v" ) == 0 )
+        {
+            lineStream.GetNextToken( &token, lineDelimiters, 2 );
+			tempx = (float)atof(token.c_str());
+
+            lineStream.GetNextToken( &token, lineDelimiters, 2 );
+			tempy = (float)atof(token.c_str());
+
+            lineStream.GetNextToken( &token, lineDelimiters, 2 );
+			tempz = (float)atof(token.c_str());
+
+			verts.push_back(Vec3(tempx, tempy, tempz));
+        }
+        else if( strcmp( token.c_str( ), "vn" ) == 0 )
+        {
+            lineStream.GetNextToken( &token, lineDelimiters, 2 );
+			tempx = (float)atof(token.c_str());
+
+            lineStream.GetNextToken( &token, lineDelimiters, 2 );
+			tempy = (float)atof(token.c_str());
+
+            lineStream.GetNextToken( &token, lineDelimiters, 2 );
+			tempz = (float)atof(token.c_str());
+
+			norms.push_back(Vec3(tempx, tempy, tempz));
+        }
+        else if( strcmp( token.c_str( ), "vt" ) == 0 )
+        {
+            lineStream.GetNextToken( &token, lineDelimiters, 2 );
+			tempx = (float)atof(token.c_str());
+
+            lineStream.GetNextToken( &token, lineDelimiters, 2 );
+			tempy = (float)atof(token.c_str());
+
+			texC.push_back(Vec3(tempx, tempy, 0));
+        }
+        else if( strcmp( token.c_str( ), "f" ) == 0 )
+        {
+            char faceTokens[3] = { '\n', ' ', '/' };
+            std::string faceIndex;
+
+            faceStream.SetTokenStream( ( char* )tempLine.c_str( ) );
+            faceStream.GetNextToken( 0, 0, 0 );
+
+            for( int i = 0; i < 3; i++ )
+            {
+                faceStream.GetNextToken( &faceIndex, faceTokens, 3 );
+                faces.push_back( ( int )atoi( faceIndex.c_str( ) ) );
+
+                faceStream.GetNextToken( &faceIndex, faceTokens, 3 );
+                faces.push_back( ( int )atoi( faceIndex.c_str( ) ) );
+
+                faceStream.GetNextToken( &faceIndex, faceTokens, 3 );
+                faces.push_back( ( int )atoi( faceIndex.c_str( ) ) );
+            }
+        }
+        else if( strcmp( token.c_str( ), "#" ) == 0 )
+        {
+           //skip
+        }
+
+        token[0] = '\0';
+    }
+
+    // "Unroll" the loaded obj information into a list of triangles.
+	
+    int numFaces = ( int )faces.size( ) / 9;
+	m_vertexCount = numFaces * 3;
+	
+	m_model = new ModelType[m_vertexCount];
+	int vertexID = 0;
+    for( int f = 0; f < ( int )faces.size( ); f+=3 )
+    {
+		m_model[vertexID].x = verts[(faces[f] - 1)].getX();
+		m_model[vertexID].y = verts[(faces[f] - 1)].getY();
+		m_model[vertexID].z = verts[(faces[f] - 1)].getZ();
+	
+		m_model[vertexID].tu = texC[(faces[f+1]-1)].getX();
+		m_model[vertexID].tv = texC[(faces[f+1]-1)].getY() ;
+
+		m_model[vertexID].nx = norms[(faces[f+2] - 1)].getX();
+		m_model[vertexID].ny = norms[(faces[f+2] - 1)].getY();
+		m_model[vertexID].nz = norms[(faces[f+2] - 1)].getZ();	
+	
+		vertexID++;
+    }
+	
+	m_indexCount = vertexID;
+
+    verts.clear( );
+    norms.clear( );
+    texC.clear( );
+    faces.clear( );
+
+    return true;
 }
 
 

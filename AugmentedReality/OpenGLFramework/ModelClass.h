@@ -1,26 +1,11 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: modelclass.h
-////////////////////////////////////////////////////////////////////////////////
 #ifndef _MODELCLASS_H_
 #define _MODELCLASS_H_
 
-
-//////////////
-// INCLUDES //
-//////////////
 #include <fstream>
 using namespace std;
 
-
-///////////////////////
-// MY CLASS INCLUDES //
-///////////////////////
 #include "textureclass.h"
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Class name: ModelClass
-////////////////////////////////////////////////////////////////////////////////
 class ModelClass
 {
 private:
@@ -44,6 +29,7 @@ public:
 	~ModelClass();
 
 	bool Initialize(OpenGLClass*, char*, char*, unsigned int, bool);
+	bool InitializeObj(OpenGLClass*, char*, char*, unsigned int, bool);
 	void Shutdown(OpenGLClass*);
 	void Render(OpenGLClass*);
 
@@ -56,6 +42,7 @@ private:
 	void ReleaseTexture();
 
 	bool LoadModel(char*);
+	bool LoadObjModel(char*);
 	void ReleaseModel();
 
 private:

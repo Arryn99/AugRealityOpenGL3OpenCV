@@ -78,9 +78,6 @@
     <ClCompile Include="modelclass.cpp">
       <Filter>Source Files\OpenGL\Legacy</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="TokenStream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -124,12 +121,6 @@
     </ClInclude>
     <ClInclude Include="modelclass.h">
       <Filter>Header Files\OpenGL\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="SOIL.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TokenStream.h">
       <Filter>Header Files</Filter>

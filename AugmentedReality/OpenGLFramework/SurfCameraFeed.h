@@ -1,6 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: SurfCamera
-////////////////////////////////////////////////////////////////////////////////
 #ifndef _SURFCAMERA_H_
 #define _SURFCAMERA_H_
 
@@ -16,6 +13,42 @@
 using namespace std;
 using namespace cv;
 
-int OpenCVCamera();
+class SurfCameraFeed {
+public:
+
+	SurfCameraFeed();
+	~SurfCameraFeed();
+
+	int OpenCVCameraInit();
+	int OpenCVCameraFrame();
+
+private:
+
+	VideoCapture* m_Cap;
+	char m_Key;
+	int m_Framecount;
+	int m_MinHessian;
+
+	std::vector<KeyPoint> m_kp_object;
+	std::vector<Point2f> m_objCorners;
+	std::vector<KeyPoint> m_kp_image;
+	std::vector<DMatch> m_GoodMatches;
+	std::vector<Point2f> m_Obj;
+	std::vector<Point2f> m_Scene;
+	std::vector<Point2f> m_SceneCorners;
+	std::vector<vector<DMatch>> m_Matches;
+
+	SurfDescriptorExtractor m_Extractor;
+	SurfFeatureDetector m_Detector;
+	FlannBasedMatcher m_Matcher;
+
+	Mat des_object;
+	Mat object;
+	Mat frame;
+	Mat H;
+	Mat image;
+	Mat des_image, img_matches;
+	
+};
 
 #endif

@@ -17,7 +17,6 @@
     <ClCompile Include="lightclass.cpp" />
     <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Model.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="openglclass.cpp" />
     <ClCompile Include="ScreenQuad.cpp" />
@@ -34,12 +33,10 @@
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="lightclass.h" />
     <ClInclude Include="lightshaderclass.h" />
-    <ClInclude Include="Model.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="openglclass.h" />
     <ClInclude Include="ScreenQuad.h" />
     <ClInclude Include="ScreenTextureShader.h" />
-    <ClInclude Include="SOIL.h" />
     <ClInclude Include="SurfCameraFeed.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureclass.h" />
