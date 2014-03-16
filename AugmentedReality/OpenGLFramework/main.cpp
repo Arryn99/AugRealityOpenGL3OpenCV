@@ -9,11 +9,15 @@
 using namespace cv;
 using namespace std;
 
+SurfCameraFeed surfCameraInstance;
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
+	surfCameraInstance.Init("Photo2.jpg");
 
-	SurfCameraFeed surfInstance;
-	surfInstance.OpenCVCameraInit();	
+	while (true) {
+		surfCameraInstance.Frame();
+	}
 
 	SystemClass* System;
 	bool result;

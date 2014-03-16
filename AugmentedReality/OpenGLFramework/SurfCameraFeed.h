@@ -15,40 +15,27 @@ using namespace cv;
 
 class SurfCameraFeed {
 public:
-
 	SurfCameraFeed();
 	~SurfCameraFeed();
 
-	int OpenCVCameraInit();
-	int OpenCVCameraFrame();
+	int OpenCVCamera();
+	int Init(string);
+	int Frame();
 
 private:
-
-	VideoCapture* m_Cap;
-	char m_Key;
-	int m_Framecount;
-	int m_MinHessian;
-
-	std::vector<KeyPoint> m_kp_object;
-	std::vector<Point2f> m_objCorners;
-	std::vector<KeyPoint> m_kp_image;
-	std::vector<DMatch> m_GoodMatches;
-	std::vector<Point2f> m_Obj;
-	std::vector<Point2f> m_Scene;
-	std::vector<Point2f> m_SceneCorners;
-	std::vector<vector<DMatch>> m_Matches;
-
-	SurfDescriptorExtractor m_Extractor;
+	Mat m_MarkerObject;
 	SurfFeatureDetector m_Detector;
+	std::vector<KeyPoint> m_KeyPointObject;
+	SurfDescriptorExtractor m_Extractor;
+    Mat m_DescriptionObject;
 	FlannBasedMatcher m_Matcher;
 
-	Mat des_object;
-	Mat object;
-	Mat frame;
-	Mat H;
-	Mat image;
-	Mat des_image, img_matches;
-	
+	VideoCapture m_Capture;
+
+	std::vector<Point2f> obj_corners;
+
+	char key;
+    int framecount;
 };
 
 #endif
