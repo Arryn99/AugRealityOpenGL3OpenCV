@@ -34,9 +34,6 @@
     <Filter Include="Header Files\OpenGL\Legacy">
       <UniqueIdentifier>{9d513955-108b-4d54-88da-2050c896d1a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\OpenGL\Legacy">
-      <UniqueIdentifier>{5ef97e2e-5ac0-4570-a60a-7786e360b440}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -75,14 +72,14 @@
     <ClCompile Include="SurfCameraFeed.cpp">
       <Filter>Source Files\OpenCV</Filter>
     </ClCompile>
-    <ClCompile Include="modelclass.cpp">
-      <Filter>Source Files\OpenGL\Legacy</Filter>
-    </ClCompile>
     <ClCompile Include="TokenStream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vec3.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modelclass.cpp">
+      <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,9 +134,6 @@
       <Filter>Source Files\OpenGL</Filter>
     </None>
     <None Include="opengl.tga">
-      <Filter>Source Files\OpenGL</Filter>
-    </None>
-    <None Include="shader-error.txt">
       <Filter>Source Files\OpenGL</Filter>
     </None>
     <None Include="test.tga">

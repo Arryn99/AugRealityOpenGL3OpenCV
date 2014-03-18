@@ -47,7 +47,6 @@
     <None Include="light.ps" />
     <None Include="light.vs" />
     <None Include="opengl.tga" />
-    <None Include="shader-error.txt" />
     <None Include="test.tga" />
     <None Include="texture.ps" />
     <None Include="texture.vs" />

@@ -1,10 +1,4 @@
-/*
-    Beginning DirectX 11 Game Programming
-    By Allen Sherrod and Wendy Jones
-
-    TokenStream - Used to return blocks of text in a file.
-*/
-
+//    TokenStream - Used to return blocks of text in a file.
 
 #include<string>
 #include"TokenStream.h"
