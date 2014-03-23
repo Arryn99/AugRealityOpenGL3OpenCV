@@ -22,6 +22,9 @@ public:
 	int Init(string);
 	int Frame();
 
+	//analyses a camera frame and returns a matrix representing a markers position. 
+	void AnalyseFrame(Mat frame);
+
 private:
 	Mat m_MarkerObject;
 	SurfFeatureDetector m_Detector;
