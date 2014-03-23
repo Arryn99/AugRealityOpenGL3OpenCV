@@ -25,16 +25,32 @@ public:
 	//analyses a camera frame and returns a matrix representing a markers position. 
 	void AnalyseFrame(Mat frame);
 
-private:
-	Mat m_MarkerObject;
-	SurfFeatureDetector m_Detector;
-	std::vector<KeyPoint> m_KeyPointObject;
-	SurfDescriptorExtractor m_Extractor;
-    Mat m_DescriptionObject;
-	FlannBasedMatcher m_Matcher;
+	//calculates a homography matrix from m_MarkerObject & grayScaleFrame
+	Mat CalculateHomography(Mat grayScaleFrame);
 
+private:
 	VideoCapture m_Capture;
 
+	/*=========== OpenCV utility objects ============*/
+
+	SurfFeatureDetector m_Detector;
+	SurfDescriptorExtractor m_Extractor;
+	FlannBasedMatcher m_Matcher;
+
+	/*=========== Variables calculated during init function ============*/
+
+	//the image we are looking for
+	Mat m_MarkerObject;
+	//key points extracted during init function for marker object
+	std::vector<KeyPoint> m_MarkerObject_KeyPoints;
+	//description object for m_MarkerObject (feature vector) calculated during init function
+	Mat m_MarkerObject_Description;
+
+	/*=========== Variables calculated during update function ============*/
+	Mat m_Frame_Description;
+	std::vector<KeyPoint> m_Frame_KeyPoints; //an array of keypoints in the image for this frame
+
+	//array of 2D points representing corners of image
 	std::vector<Point2f> obj_corners;
 
 	char key;
