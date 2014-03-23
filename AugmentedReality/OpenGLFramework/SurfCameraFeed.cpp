@@ -39,6 +39,8 @@ int SurfCameraFeed::Init(string filename) {
 	framecount = 0;
 }
 
+Mat SurfCameraFeed::CalculateHomography() {
+}
 /**
 Analyses each frame of camera feed.
 @param frame - a matrix representing the camera frame

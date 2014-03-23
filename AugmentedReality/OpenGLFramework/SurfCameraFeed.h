@@ -24,6 +24,7 @@ public:
 
 	//analyses a camera frame and returns a matrix representing a markers position. 
 	void AnalyseFrame(Mat frame);
+	Mat CalculateHomography(Mat );
 
 private:
 	Mat m_MarkerObject;
