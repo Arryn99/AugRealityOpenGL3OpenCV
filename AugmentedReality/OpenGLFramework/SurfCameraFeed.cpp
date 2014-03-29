@@ -101,7 +101,7 @@ void SurfCameraFeed::AnalyseFrame(Mat frame) {
 	std::vector<Point2f> sceneCorners(4);
 
 	if (H.cols > 0) {
-	perspectiveTransform( obj_corners, sceneCorners, H);
+		perspectiveTransform( obj_corners, sceneCorners, H);
 	}
 
 	//Draw lines between the corners (the mapped object in the scene image )

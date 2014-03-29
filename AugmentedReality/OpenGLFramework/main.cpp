@@ -9,7 +9,7 @@ SurfCameraFeed surfCameraInstance;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
-	surfCameraInstance.Init("Photo5.jpg");
+	surfCameraInstance.Init("Photo2.jpg");
 
 	while (true) {
 		surfCameraInstance.Frame();
