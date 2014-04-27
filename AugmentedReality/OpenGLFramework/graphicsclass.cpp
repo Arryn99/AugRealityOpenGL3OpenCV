@@ -98,7 +98,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_ObjModel->InitializeObj(m_OpenGL,  "Models/drone.obj", "opengl.tga", 1, true);
+	result = m_ObjModel->InitializeObj(m_OpenGL,  "Models/robot/drone.obj", "opengl.tga", 1, true);
 	if(!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -130,7 +130,9 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	// Initialize the light object.
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
+	
 
+	m_ObjectDetector.Init("Photo2.jpg");
 	return true;
 }
 
@@ -189,7 +191,7 @@ void GraphicsClass::Shutdown()
 
 	return;
 }
-
+Point2f point = Point2f(0,0);
 
 bool GraphicsClass::Frame(int frameCount)
 {
@@ -206,6 +208,7 @@ bool GraphicsClass::Frame(int frameCount)
 
 	if (frameCount % 5 == 0) {
 		m_videoCapture >> cameraFrame;
+		m_ObjectDetector.AnalyseFrame(cameraFrame);
 	}
 	// Render the graphics scene.
 	result = Render(rotation);
@@ -221,13 +224,11 @@ bool GraphicsClass::Frame(int frameCount)
 
 bool GraphicsClass::Render(float rotation)
 {
-	float worldMatrix[16];
-	float viewMatrix[16];
-	float projectionMatrix[16];
-	float lightDirection[3];
-	float diffuseLightColor[4];
-
-
+	glm::mat4 worldMatrix;
+	glm::mat4 viewMatrix;
+	glm::mat4 projectionMatrix;
+	glm::vec3 lightDirection;
+	glm::mat4 diffuseLightColor;
 
 	// Clear the buffers to begin the scene.
 	m_OpenGL->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -235,10 +236,10 @@ bool GraphicsClass::Render(float rotation)
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
 	m_ScreenQuad->updateTexture(m_OpenGL, cameraFrame);
-
+	
 	// Set the texture shader as the current shader program and set the matrices that it will use for rendering.
 	m_ScreenTextureShader->SetShader(m_OpenGL);
-	m_ScreenTextureShader->SetShaderParameters(m_OpenGL, worldMatrix, viewMatrix, projectionMatrix, 0);
+	m_ScreenTextureShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 0);
 
 	//disable depth test
 	glDisable(GL_DEPTH_TEST);
@@ -250,24 +251,26 @@ bool GraphicsClass::Render(float rotation)
 	glEnable(GL_DEPTH_TEST);
 
 	// Get the world, view, and projection matrices from the opengl and camera objects.
-	m_OpenGL->GetWorldMatrix(worldMatrix);
-	m_Camera->GetViewMatrix(viewMatrix);
-	m_OpenGL->GetProjectionMatrix(projectionMatrix);
+	m_Camera->GetViewMatrix(glm::value_ptr(viewMatrix));
+	m_OpenGL->GetProjectionMatrix(glm::value_ptr(projectionMatrix));
 
 	// Get the light properties.
-	m_Light->GetDirection(lightDirection);
-	m_Light->GetDiffuseColor(diffuseLightColor);
+	m_Light->GetDirection(glm::value_ptr(lightDirection));
+	m_Light->GetDiffuseColor(glm::value_ptr(diffuseLightColor));
 
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	m_OpenGL->MatrixRotationY(worldMatrix, rotation);
+	worldMatrix *= glm::rotate(worldMatrix, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
+	glm::vec3 screenPos = glm::vec3(0.0f, 0.0f, 1.0f);
+	glm::vec3 worldPos = glm::unProject(screenPos, viewMatrix, projectionMatrix, glm::vec4(0.0f, 0.0f, 640, 480));
+	worldMatrix *= glm::translate(worldMatrix, glm::vec3(worldPos.x, worldPos.y, 0.0f));
+
+	//  printf("Coordinates in object space: %f, %f, %f\n", worldPos.x, worldPos.y, worldPos.z);
 	// Set the light shader as the current shader program and set the matrices that it will use for rendering.
 	m_LightShader->SetShader(m_OpenGL);
-	m_LightShader->SetShaderParameters(m_OpenGL, worldMatrix, viewMatrix, projectionMatrix, 1, lightDirection, diffuseLightColor);
+	m_LightShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix),  glm::value_ptr(projectionMatrix), 1,  glm::value_ptr(lightDirection),  glm::value_ptr(diffuseLightColor));
 
 	m_ObjModel->Render(m_OpenGL);
-	// Render the model using the light shader.
-	//m_Model->Render(m_OpenGL);
 	
 	// Present the rendered scene to the screen.
 	m_OpenGL->EndScene();

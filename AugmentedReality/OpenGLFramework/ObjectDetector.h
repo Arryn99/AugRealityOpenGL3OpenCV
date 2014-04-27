@@ -1,5 +1,5 @@
-#ifndef _SURFCAMERA_H_
-#define _SURFCAMERA_H_
+#ifndef _OBEJECTDETECTOR_H_
+#define _OBEJECTDETECTOR_H_
 
 #include <stdio.h>
 #include <iostream>
@@ -13,10 +13,10 @@
 using namespace std;
 using namespace cv;
 
-class SurfCameraFeed {
+class ObjectDetector {
 public:
-	SurfCameraFeed();
-	~SurfCameraFeed();
+	ObjectDetector();
+	~ObjectDetector();
 
 	int OpenCVCamera();
 	int Init(string);
@@ -26,7 +26,7 @@ public:
 	void AnalyseFrame(Mat frame);
 
 	//calculates a homography matrix from m_MarkerObject & grayScaleFrame
-	Mat CalculateHomography(Mat grayScaleFrame);
+	Mat CalculateHomography(Mat& grayScaleFrame);
 
 private:
 	VideoCapture m_Capture;

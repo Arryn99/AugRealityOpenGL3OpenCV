@@ -8,7 +8,10 @@
 #include "lightclass.h"
 #include "ScreenQuad.h"
 #include "ScreenTextureShader.h"
-
+#include "ObjectDetector.h"
+#include "..\glm\glm.hpp"
+#include "..\glm\gtc\type_ptr.hpp"
+#include "..\glm\gtc\matrix_transform.hpp" // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <opencv2\highgui\highgui.hpp>
 
 using namespace cv;
@@ -46,6 +49,7 @@ private:
 
 	Mat cameraFrame;	//updated every 5 frames to hold the camera feed image
 	ModelClass* m_ObjModel;
+	ObjectDetector m_ObjectDetector;
 };
 
 #endif

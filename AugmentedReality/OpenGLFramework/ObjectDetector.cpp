@@ -1,12 +1,12 @@
-#include "SurfCameraFeed.h"
+#include "ObjectDetector.h"
 
-SurfCameraFeed::SurfCameraFeed() {
+ObjectDetector::ObjectDetector() {
 };
 
-SurfCameraFeed::~SurfCameraFeed() {
+ObjectDetector::~ObjectDetector() {
 };
 
-int SurfCameraFeed::Init(string filename) {
+int ObjectDetector::Init(string filename) {
 
 	m_MarkerObject = imread(filename, CV_LOAD_IMAGE_GRAYSCALE );
 
@@ -25,8 +25,6 @@ int SurfCameraFeed::Init(string filename) {
 	m_Extractor.compute(m_MarkerObject, m_MarkerObjectKeyPoints, m_MarkerObjectDescription );
 	m_Capture = VideoCapture(0);
 
-	namedWindow("Good Matches");
-
 	obj_corners = std::vector<Point2f>(4);
 
 	//Get the corners from the object
@@ -40,7 +38,7 @@ int SurfCameraFeed::Init(string filename) {
 	m_Framecount = 0;
 }
 
-Mat SurfCameraFeed::CalculateHomography(Mat grayScaleFrame) {
+Mat ObjectDetector::CalculateHomography(Mat& grayScaleFrame) {
 
 	//use Surf detector to detect key points
 	m_Detector.detect(grayScaleFrame, m_FrameKeyPoints);
@@ -67,9 +65,6 @@ Mat SurfCameraFeed::CalculateHomography(Mat grayScaleFrame) {
 	std::vector<Point2f> obj;
 	std::vector<Point2f> scene;
 
-	//Draw only "good" matches
-	//drawMatches( m_MarkerObject, m_MarkerObjectKeyPoints, greyScaleImage, m_FrameKeyPoints, good_matches, img_matches, Scalar::all(-1), Scalar::all(-1), vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-
 	if (good_matches.size() >= 4)
 	{
 		for( int i = 0; i < good_matches.size(); i++ )
@@ -87,7 +82,7 @@ Mat SurfCameraFeed::CalculateHomography(Mat grayScaleFrame) {
 Analyses each frame of camera feed.
 @param frame - a matrix representing the camera frame
 */
-void SurfCameraFeed::AnalyseFrame(Mat frame) {
+void ObjectDetector::AnalyseFrame(Mat frame) {
 
 	Mat frameDescription;
 	std::vector<KeyPoint> frameKeyPoints; //an array of keypoints in the image for this frame
@@ -105,16 +100,16 @@ void SurfCameraFeed::AnalyseFrame(Mat frame) {
 	}
 
 	//Draw lines between the corners (the mapped object in the scene image )
-	line( frame, sceneCorners[0] + Point2f( m_MarkerObject.cols, 0), sceneCorners[1] + Point2f( m_MarkerObject.cols, 0), Scalar(0, 255, 0), 4 );
-	line( frame, sceneCorners[1] + Point2f( m_MarkerObject.cols, 0), sceneCorners[2] + Point2f( m_MarkerObject.cols, 0), Scalar( 0, 255, 0), 4 );
-	line( frame, sceneCorners[2] + Point2f( m_MarkerObject.cols, 0), sceneCorners[3] + Point2f( m_MarkerObject.cols, 0), Scalar( 0, 255, 0), 4 );
-	line( frame, sceneCorners[3] + Point2f( m_MarkerObject.cols, 0), sceneCorners[0] + Point2f( m_MarkerObject.cols, 0), Scalar( 0, 255, 0), 4 );
-	
+	line( frame, sceneCorners[0], sceneCorners[1], Scalar(0, 255, 0), 4 );
+	line( frame, sceneCorners[1], sceneCorners[2], Scalar( 0, 255, 0), 4 );
+	line( frame, sceneCorners[2], sceneCorners[3], Scalar( 0, 255, 0), 4 );
+	line( frame, sceneCorners[3], sceneCorners[0], Scalar( 0, 255, 0), 4 );
+	//calibrateCamera(
 	//Show detected matches
-	imshow("Good Matches", frame);
+	//imshow("Good Matches", frame);
 }
 
-int SurfCameraFeed::Frame() {
+int ObjectDetector::Frame() {
 
 	Mat frame;
 	m_Capture >> frame;

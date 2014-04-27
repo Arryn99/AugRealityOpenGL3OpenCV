@@ -21,7 +21,7 @@
     <ClCompile Include="openglclass.cpp" />
     <ClCompile Include="ScreenQuad.cpp" />
     <ClCompile Include="ScreenTextureShader.cpp" />
-    <ClCompile Include="SurfCameraFeed.cpp" />
+    <ClCompile Include="ObjectDetector.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="TokenStream.cpp" />
@@ -37,7 +37,7 @@
     <ClInclude Include="openglclass.h" />
     <ClInclude Include="ScreenQuad.h" />
     <ClInclude Include="ScreenTextureShader.h" />
-    <ClInclude Include="SurfCameraFeed.h" />
+    <ClInclude Include="ObjectDetector.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureclass.h" />
     <ClInclude Include="TokenStream.h" />
