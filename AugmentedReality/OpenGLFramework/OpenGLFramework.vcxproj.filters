@@ -42,9 +42,6 @@
     <ClCompile Include="cameraclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="graphicsclass.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="inputclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
@@ -69,9 +66,6 @@
     <ClCompile Include="ScreenTextureShader.cpp">
       <Filter>Source Files\Screen</Filter>
     </ClCompile>
-    <ClCompile Include="SurfCameraFeed.cpp">
-      <Filter>Source Files\OpenCV</Filter>
-    </ClCompile>
     <ClCompile Include="TokenStream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -80,6 +74,12 @@
     </ClCompile>
     <ClCompile Include="modelclass.cpp">
       <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="graphicsclass.cpp">
+      <Filter>Source Files\OpenCV</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectDetector.cpp">
+      <Filter>Source Files\OpenCV</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,9 +113,6 @@
     <ClInclude Include="ScreenTextureShader.h">
       <Filter>Header Files\Screen</Filter>
     </ClInclude>
-    <ClInclude Include="SurfCameraFeed.h">
-      <Filter>Header Files\OpenCV</Filter>
-    </ClInclude>
     <ClInclude Include="modelclass.h">
       <Filter>Header Files\OpenGL\Legacy</Filter>
     </ClInclude>
@@ -124,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="Vec3.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectDetector.h">
+      <Filter>Header Files\OpenCV</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
