@@ -23,10 +23,11 @@ public:
 	int Frame();
 
 	//analyses a camera frame and returns a matrix representing a marker's position. 
-	void AnalyseFrame(Mat frame);
+	void AnalyseFrame(Mat& frame);
 
 	//calculates a homography matrix from m_MarkerObject & grayScaleFrame
-	Mat CalculateHomography(Mat& grayScaleFrame);
+	bool detectObject(Mat& grayScaleFrame);
+	void drawDetections(Mat& frame);
 
 private:
 	VideoCapture m_Capture;
@@ -52,9 +53,12 @@ private:
 
 	//array of 2D points representing corners of image
 	std::vector<Point2f> obj_corners;
+	std::vector<Point2f> obj;
+	std::vector<Point2f> scene;
 
 	char m_Key;
     int m_Framecount;
+	Mat mHomography;
 };
 
 #endif

@@ -49,7 +49,7 @@ private:
 
 	Mat cameraFrame;	//updated every 5 frames to hold the camera feed image
 	ModelClass* m_ObjModel;
-	ObjectDetector m_ObjectDetector;
+
 };
 
 #endif

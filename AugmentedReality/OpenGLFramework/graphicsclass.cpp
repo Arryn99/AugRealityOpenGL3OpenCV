@@ -1,5 +1,18 @@
 #include "graphicsclass.h"
 #include <opencv2\core\core.hpp>
+#include <boost/thread.hpp>
+
+//object detector
+ObjectDetector m_ObjectDetector;
+bool detecting = false;
+
+void tryToFindObject(Mat& cameraFrame){
+	if (!detecting) {
+		detecting = true;
+		m_ObjectDetector.AnalyseFrame(cameraFrame);
+		detecting = false;
+	}
+}
 
 GraphicsClass::GraphicsClass()
 {
@@ -191,7 +204,6 @@ void GraphicsClass::Shutdown()
 
 	return;
 }
-Point2f point = Point2f(0,0);
 
 bool GraphicsClass::Frame(int frameCount)
 {
@@ -206,10 +218,11 @@ bool GraphicsClass::Frame(int frameCount)
 		rotation -= 360.0f;
 	} 
 
-	if (frameCount % 5 == 0) {
-		m_videoCapture >> cameraFrame;
-		m_ObjectDetector.AnalyseFrame(cameraFrame);
-	}
+	m_videoCapture >> cameraFrame;
+	boost::thread objectDetectionThread(&tryToFindObject, cameraFrame);
+
+	m_ObjectDetector.drawDetections(cameraFrame);
+
 	// Render the graphics scene.
 	result = Render(rotation);
 
