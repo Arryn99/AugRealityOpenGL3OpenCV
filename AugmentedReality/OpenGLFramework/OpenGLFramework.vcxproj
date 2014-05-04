@@ -81,7 +81,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>C:\OpenCV\opencv\build\x86\vc10\bin;C:\OpenCV\opencv\build\x86\vc10\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\OpenCV\opencv\build\x86\vc10\bin;C:\OpenCV\opencv\build\x86\vc10\lib;C:\boost_1_55_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\boost_1_55_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
