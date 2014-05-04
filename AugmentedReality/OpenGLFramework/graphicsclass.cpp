@@ -210,7 +210,6 @@ bool GraphicsClass::Frame(int frameCount)
 	bool result;
 	static float rotation = 0.0f;
 
-
 	// Update the rotation variable each frame.
 	rotation += 0.0174532925f * 2.0f;
 	if(rotation > 360.0f)
@@ -222,6 +221,7 @@ bool GraphicsClass::Frame(int frameCount)
 	boost::thread objectDetectionThread(&tryToFindObject, cameraFrame);
 
 	m_ObjectDetector.drawDetections(cameraFrame);
+	m_ObjectDetector.SetCameraCentre(cameraFrame.cols / 2, cameraFrame.rows / 2);
 
 	// Render the graphics scene.
 	result = Render(rotation);
@@ -274,9 +274,9 @@ bool GraphicsClass::Render(float rotation)
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
 	worldMatrix *= glm::rotate(worldMatrix, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	glm::vec3 screenPos = glm::vec3(0.0f, 0.0f, 1.0f);
-	glm::vec3 worldPos = glm::unProject(screenPos, viewMatrix, projectionMatrix, glm::vec4(0.0f, 0.0f, 640, 480));
-	worldMatrix *= glm::translate(worldMatrix, glm::vec3(worldPos.x, worldPos.y, 0.0f));
+	//glm::vec3 screenPos = glm::vec3(0.0f, 0.0f, 1.0f);
+	//glm::vec3 worldPos = glm::unProject(screenPos, viewMatrix, projectionMatrix, glm::vec4(0.0f, 0.0f, 640, 480));
+	//worldMatrix *= glm::translate(worldMatrix, glm::vec3(worldPos.x, worldPos.y, 0.0f));
 
 	//  printf("Coordinates in object space: %f, %f, %f\n", worldPos.x, worldPos.y, worldPos.z);
 	// Set the light shader as the current shader program and set the matrices that it will use for rendering.

@@ -1,6 +1,8 @@
 #include "ObjectDetector.h"
+#define M_PI       3.14159265358979323846
 
 ObjectDetector::ObjectDetector() {
+	m_fov = 60.0 * M_PI / 180.0;
 };
 
 ObjectDetector::~ObjectDetector() {
@@ -25,17 +27,15 @@ int ObjectDetector::Init(string filename) {
 	m_Extractor.compute(m_MarkerObject, m_MarkerObjectKeyPoints, m_MarkerObjectDescription);
 	m_Capture = VideoCapture(0);
 
-	obj_corners = std::vector<Point2f>(4);
+	m_Obj_corners = std::vector<Point2f>(4);
 
 	//Get the corners from the object
 	//Draw a square around the object in screen space
-	obj_corners[0] = cvPoint(0, 0);
-	obj_corners[1] = cvPoint(m_MarkerObject.cols, 0);
-	obj_corners[2] = cvPoint(m_MarkerObject.cols, m_MarkerObject.rows);
-	obj_corners[3] = cvPoint(0, m_MarkerObject.rows);
+	m_Obj_corners[0] = cvPoint(0, 0);
+	m_Obj_corners[1] = cvPoint(m_MarkerObject.cols, 0);
+	m_Obj_corners[2] = cvPoint(m_MarkerObject.cols, m_MarkerObject.rows);
+	m_Obj_corners[3] = cvPoint(0, m_MarkerObject.rows);
 
-	m_Key = 'a';
-	m_Framecount = 0;
 }
 std::vector<vector<DMatch>> matches;
 
@@ -64,16 +64,16 @@ bool ObjectDetector::detectObject(Mat& grayScaleFrame) {
 	}
 
 	//Localize the object
-	obj.clear();
-	scene.clear();
+	m_Obj.clear();
+	m_Scene.clear();
 
 	if (good_matches.size() >= 4)
 	{
 		for (int i = 0; i < good_matches.size(); i++)
 		{
 			//Get the keypoints from the good matches
-			obj.push_back(m_MarkerObjectKeyPoints[good_matches[i].queryIdx].pt);
-			scene.push_back(m_FrameKeyPoints[good_matches[i].trainIdx].pt);
+			m_Obj.push_back(m_MarkerObjectKeyPoints[good_matches[i].queryIdx].pt);
+			m_Scene.push_back(m_FrameKeyPoints[good_matches[i].trainIdx].pt);
 		}
 		return true;
 	}
@@ -94,18 +94,18 @@ void ObjectDetector::AnalyseFrame(Mat& frame) {
 	cvtColor(frame, greyScaleImage, CV_RGB2GRAY);
 
 	if (detectObject(greyScaleImage)) {
-		mHomography = findHomography(obj, scene, CV_RANSAC);
+		m_Homography = findHomography(m_Obj, m_Scene, CV_RANSAC);
 	}
 	else{
-		mHomography.empty();
+		m_Homography.empty();
 	}
 }
 
 void ObjectDetector::drawDetections(Mat& frame) {
 	
-	if (mHomography.cols > 0) {
+	if (m_Homography.cols > 0) {
 		std::vector<Point2f> sceneCorners(4);
-		perspectiveTransform(obj_corners, sceneCorners, mHomography);
+		perspectiveTransform(m_Obj_corners, sceneCorners, m_Homography);
 
 		//Draw lines between the corners (the mapped object in the scene image )
 		line(frame, sceneCorners[0], sceneCorners[1], Scalar(0, 255, 0), 4);
@@ -116,19 +116,25 @@ void ObjectDetector::drawDetections(Mat& frame) {
 
 }
 
-int ObjectDetector::Frame() {
+void ObjectDetector::UpdateParameters()
+{
+	m_focal = m_cx / tan(m_fov*0.5*M_PI / 180.0);
 
-	Mat frame;
-	m_Capture >> frame;
+	m_camera_intrinsics = cv::Mat::eye(3, 3, CV_64F);
 
-	if (m_Framecount < 5)
-	{
-		m_Framecount++;
-		return 0;
-	}
+	m_camera_intrinsics.at<double>(0, 0) = m_focal;
+	m_camera_intrinsics.at<double>(1, 1) = m_focal;
+	m_camera_intrinsics.at<double>(0, 2) = m_cx;
+	m_camera_intrinsics.at<double>(1, 2) = m_cy;
 
-	AnalyseFrame(frame);
+	m_inv_camera_intrinsics = m_camera_intrinsics.inv();
 
-	m_Key = waitKey(1);
-	return 0;
+	m_vfov = atan(m_cy / m_focal)*180.0 / M_PI*2.0;
+}
+
+void ObjectDetector::SetCameraCentre(double cx, double cy)
+{
+	m_cx = cx;
+	m_cy = cy;
+	UpdateParameters();
 }

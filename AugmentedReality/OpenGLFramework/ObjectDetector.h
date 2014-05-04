@@ -28,9 +28,11 @@ public:
 	//calculates a homography matrix from m_MarkerObject & grayScaleFrame
 	bool detectObject(Mat& grayScaleFrame);
 	void drawDetections(Mat& frame);
+	void SetCameraCentre(double cx, double cy);
 
 private:
 	VideoCapture m_Capture;
+	void UpdateParameters();
 
 	/*=========== OpenCV utility objects ============*/
 
@@ -52,13 +54,20 @@ private:
 	std::vector<KeyPoint> m_FrameKeyPoints; //an array of keypoints in the image for this frame
 
 	//array of 2D points representing corners of image
-	std::vector<Point2f> obj_corners;
-	std::vector<Point2f> obj;
-	std::vector<Point2f> scene;
+	std::vector<Point2f> m_Obj_corners;
+	std::vector<Point2f> m_Obj;
+	std::vector<Point2f> m_Scene;
 
-	char m_Key;
-    int m_Framecount;
-	Mat mHomography;
+	Mat m_Homography;
+
+	/*=========== camera intrinsics ============*/
+	cv::Mat m_camera_intrinsics; // 3x3 camera matrix
+	cv::Mat m_inv_camera_intrinsics; // 3x3 camera matrix
+	double m_fov; // horizontal field of view in degrees
+	double m_focal; // calculated from m_fov and model size
+	double m_cx, m_cy; // camera optical centre
+	double m_vfov; // for OpenGL, vertical field of view in degrees
+
 };
 
 #endif
