@@ -13,6 +13,23 @@
 using namespace std;
 using namespace cv;
 
+class ObjectDetectorResults  {
+public:
+	ObjectDetectorResults(Mat& rotation, Mat& translation){
+		m_rotation = rotation;
+		m_translation = translation;
+	}
+
+	void getObjectPosition(double& x, double& y, double& z);
+
+	double x, y, z;
+private:
+	Mat m_rotation;
+	Mat m_translation;
+};
+
+
+
 class ObjectDetector {
 public:
 	ObjectDetector();
@@ -28,8 +45,23 @@ public:
 	//calculates a homography matrix from m_MarkerObject & grayScaleFrame
 	bool detectObject(Mat& grayScaleFrame);
 	void drawDetections(Mat& frame);
-	void SetCameraCentre(double cx, double cy);
 
+	void SetCameraCentre(double cx, double cy);
+	bool PoseEstimation(const cv::Mat &H);
+	void SetARObject(const cv::Mat &AR_object);
+
+	void GetYPR(const cv::Mat &rot, double &yaw, double &pitch, double &roll);
+	void GetYPR(double &yaw, double &pitch, double &roll);
+
+	void getObjectPosition(double& x, double& y, double& z);
+	void UpdateAlphaBetaTracker();
+	void ProjectModel(double x, double y, double z, double yaw, double pitch, double roll, cv::Point2i ret_corners[4]);
+	
+	cv::Mat MakeRotation3x3(double yaw, double pitch, double roll);
+	ObjectDetectorResults* getResults();
+
+	cv::Mat m_camera_intrinsics; // 3x3 camera matrix
+	cv::Mat m_inv_camera_intrinsics; // 3x3 camera matrix
 private:
 	VideoCapture m_Capture;
 	void UpdateParameters();
@@ -50,6 +82,7 @@ private:
 	Mat m_MarkerObjectDescription;
 
 	/*=========== Variables calculated during update function ============*/
+	Mat m_greyScaleImage;
 	Mat m_FrameDescription;
 	std::vector<KeyPoint> m_FrameKeyPoints; //an array of keypoints in the image for this frame
 
@@ -61,12 +94,21 @@ private:
 	Mat m_Homography;
 
 	/*=========== camera intrinsics ============*/
-	cv::Mat m_camera_intrinsics; // 3x3 camera matrix
-	cv::Mat m_inv_camera_intrinsics; // 3x3 camera matrix
+	
 	double m_fov; // horizontal field of view in degrees
 	double m_focal; // calculated from m_fov and model size
 	double m_cx, m_cy; // camera optical centre
 	double m_vfov; // for OpenGL, vertical field of view in degrees
+
+	/*====================== nar variables ==============================*/
+	cv::Mat m_AR_object_image_pts; // 4 corners, image points, never changes
+	cv::Mat m_AR_oject_worlds_pts; // 4 corners, world points, constantly changing
+
+	// From pose estimation
+	cv::Mat m_AR_object_rotation;
+	cv::Mat m_AR_object_translation;
+
+	std::vector<ObjectDetectorResults> m_Results;
 
 };
 

@@ -21,7 +21,7 @@ GraphicsClass::GraphicsClass()
 	m_Model = 0;
 	m_LightShader = 0;
 	m_Light = 0;
-	
+
 	m_ScreenQuad = 0;
 	m_ScreenTextureShader = 0;
 
@@ -49,7 +49,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 
 	// Create the camera object.
 	m_Camera = new CameraClass;
-	if(!m_Camera)
+	if (!m_Camera)
 	{
 		return false;
 	}
@@ -60,7 +60,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	////////////////
 	// Create the screen quad.
 	m_ScreenQuad = new ScreenQuad;
-	if(!m_ScreenQuad)
+	if (!m_ScreenQuad)
 	{
 		return false;
 	}
@@ -69,18 +69,18 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	Mat object = imread("Photo2.jpg");
 	cv::flip(object, object, 0);
 	m_ScreenQuad->Initialize(m_OpenGL, object, 0, false);
-	
-	
+
+
 	// Create the texture shader object.
 	m_ScreenTextureShader = new ScreenTextureShader;
-	if(!m_ScreenTextureShader)
+	if (!m_ScreenTextureShader)
 	{
 		return false;
 	}
 
 	// Initialize the texture shader object.
 	result = m_ScreenTextureShader->Initialize(m_OpenGL, hwnd);
-	if(!result)
+	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
 		return false;
@@ -91,43 +91,43 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 
 	// Create the model object.
 	m_Model = new ModelClass;
-	if(!m_Model)
+	if (!m_Model)
 	{
 		return false;
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_OpenGL,  "cube.txt", "opengl.tga", 1, true);
-	if(!result)
+	result = m_Model->Initialize(m_OpenGL, "cube.txt", "opengl.tga", 1, true);
+	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
 
 	m_ObjModel = new ModelClass;
-	if(!m_ObjModel)
+	if (!m_ObjModel)
 	{
 		return false;
 	}
 
 	// Initialize the model object.
-	result = m_ObjModel->InitializeObj(m_OpenGL,  "Models/robot/drone.obj", "opengl.tga", 1, true);
-	if(!result)
+	result = m_ObjModel->InitializeObj(m_OpenGL, "Models/robot/drone.obj", "opengl.tga", 1, true);
+	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
-	
+
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
-	if(!m_LightShader)
+	if (!m_LightShader)
 	{
 		return false;
 	}
 
 	// Initialize the light shader object.
 	result = m_LightShader->Initialize(m_OpenGL, hwnd);
-	if(!result)
+	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the light shader object.", L"Error", MB_OK);
 		return false;
@@ -135,7 +135,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 
 	// Create the light object.
 	m_Light = new LightClass;
-	if(!m_Light)
+	if (!m_Light)
 	{
 		return false;
 	}
@@ -143,9 +143,9 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	// Initialize the light object.
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
-	
 
-	m_ObjectDetector.Init("Photo2.jpg");
+	m_ObjectDetector.Init("chewing.jpg");
+
 	return true;
 }
 
@@ -154,7 +154,7 @@ void GraphicsClass::Shutdown()
 {
 
 	// Release the texture shader object.
-	if(m_ScreenTextureShader)
+	if (m_ScreenTextureShader)
 	{
 		m_ScreenTextureShader->Shutdown(m_OpenGL);
 		delete m_ScreenTextureShader;
@@ -162,7 +162,7 @@ void GraphicsClass::Shutdown()
 	}
 
 	// Release the screen quad
-	if(m_ScreenQuad)
+	if (m_ScreenQuad)
 	{
 		m_ScreenQuad->Shutdown(m_OpenGL);
 		delete m_ScreenQuad;
@@ -170,14 +170,14 @@ void GraphicsClass::Shutdown()
 	}
 
 	// Release the light object.
-	if(m_Light)
+	if (m_Light)
 	{
 		delete m_Light;
 		m_Light = 0;
 	}
 
 	// Release the light shader object.
-	if(m_LightShader)
+	if (m_LightShader)
 	{
 		m_LightShader->Shutdown(m_OpenGL);
 		delete m_LightShader;
@@ -185,7 +185,7 @@ void GraphicsClass::Shutdown()
 	}
 
 	// Release the model object.
-	if(m_Model)
+	if (m_Model)
 	{
 		m_Model->Shutdown(m_OpenGL);
 		delete m_Model;
@@ -193,7 +193,7 @@ void GraphicsClass::Shutdown()
 	}
 
 	// Release the camera object.
-	if(m_Camera)
+	if (m_Camera)
 	{
 		delete m_Camera;
 		m_Camera = 0;
@@ -204,6 +204,7 @@ void GraphicsClass::Shutdown()
 
 	return;
 }
+
 
 bool GraphicsClass::Frame(int frameCount)
 {
@@ -226,7 +227,7 @@ bool GraphicsClass::Frame(int frameCount)
 	// Render the graphics scene.
 	result = Render(rotation);
 
-	if(!result)
+	if (!result)
 	{
 		return false;
 	}
@@ -234,7 +235,8 @@ bool GraphicsClass::Frame(int frameCount)
 	return true;
 }
 
-
+double x, y, z;
+double yaw, pitch, roll;
 bool GraphicsClass::Render(float rotation)
 {
 	glm::mat4 worldMatrix;
@@ -249,10 +251,10 @@ bool GraphicsClass::Render(float rotation)
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
 	m_ScreenQuad->updateTexture(m_OpenGL, cameraFrame);
-	
+
 	// Set the texture shader as the current shader program and set the matrices that it will use for rendering.
 	m_ScreenTextureShader->SetShader(m_OpenGL);
-	m_ScreenTextureShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 0);
+	m_ScreenTextureShader->SetShaderParameters(m_OpenGL, glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 0);
 
 	//disable depth test
 	glDisable(GL_DEPTH_TEST);
@@ -272,19 +274,48 @@ bool GraphicsClass::Render(float rotation)
 	m_Light->GetDiffuseColor(glm::value_ptr(diffuseLightColor));
 
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	worldMatrix *= glm::rotate(worldMatrix, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+	//
 
 	//glm::vec3 screenPos = glm::vec3(0.0f, 0.0f, 1.0f);
 	//glm::vec3 worldPos = glm::unProject(screenPos, viewMatrix, projectionMatrix, glm::vec4(0.0f, 0.0f, 640, 480));
-	//worldMatrix *= glm::translate(worldMatrix, glm::vec3(worldPos.x, worldPos.y, 0.0f));
 
+
+	m_ObjectDetector.GetYPR(yaw, pitch, roll);
+	m_ObjectDetector.getObjectPosition(x, y, z);
+
+	ObjectDetectorResults* result = m_ObjectDetector.getResults();
+	if (result != NULL) {
+		
+		result->getObjectPosition(x, y, z);
+	
+		char numstr[21]; // enough to hold all numbers up to 64-bits
+		sprintf(numstr, "x %f \n", x);
+		OutputDebugStringA(numstr);
+		sprintf(numstr, "y %f \n", y);
+		OutputDebugStringA(numstr);
+		sprintf(numstr, "z %f \n", z);
+		OutputDebugStringA(numstr);
+	}
+
+	worldMatrix *= glm::translate(worldMatrix, glm::vec3(x, y, z));
+	/*float degrees = (float)glm::degrees(yaw);
+	cout << degrees;
+	worldMatrix *= glm::rotate(worldMatrix, degrees, glm::vec3(1.0f, 0.0f, 0.0f));
+
+	degrees = (float)glm::degrees(pitch);
+	cout << degrees;
+	worldMatrix *= glm::rotate(worldMatrix, degrees, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	degrees = (float)glm::degrees(roll);
+	cout << degrees;
+	worldMatrix *= glm::rotate(worldMatrix, degrees, glm::vec3(0.0f, 0.0f, 1.0f));*/
 	//  printf("Coordinates in object space: %f, %f, %f\n", worldPos.x, worldPos.y, worldPos.z);
 	// Set the light shader as the current shader program and set the matrices that it will use for rendering.
 	m_LightShader->SetShader(m_OpenGL);
-	m_LightShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix),  glm::value_ptr(projectionMatrix), 1,  glm::value_ptr(lightDirection),  glm::value_ptr(diffuseLightColor));
+	m_LightShader->SetShaderParameters(m_OpenGL, glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 1, glm::value_ptr(lightDirection), glm::value_ptr(diffuseLightColor));
 
 	m_ObjModel->Render(m_OpenGL);
-	
+
 	// Present the rendered scene to the screen.
 	m_OpenGL->EndScene();
 

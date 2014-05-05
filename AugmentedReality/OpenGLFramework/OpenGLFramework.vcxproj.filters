@@ -81,6 +81,12 @@
     <ClCompile Include="ObjectDetector.cpp">
       <Filter>Source Files\OpenCV</Filter>
     </ClCompile>
+    <ClCompile Include="RPP.cpp">
+      <Filter>Source Files\OpenCV</Filter>
+    </ClCompile>
+    <ClCompile Include="Rpoly.cpp">
+      <Filter>Source Files\OpenCV</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraclass.h">
@@ -123,6 +129,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ObjectDetector.h">
+      <Filter>Header Files\OpenCV</Filter>
+    </ClInclude>
+    <ClInclude Include="RPP.h">
+      <Filter>Header Files\OpenCV</Filter>
+    </ClInclude>
+    <ClInclude Include="Rpoly.h">
       <Filter>Header Files\OpenCV</Filter>
     </ClInclude>
   </ItemGroup>
