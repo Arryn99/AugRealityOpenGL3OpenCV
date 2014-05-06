@@ -111,8 +111,14 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 
 	// Initialize the model object.
+<<<<<<< HEAD
+	//result = m_ObjModel->InitializeObj(m_OpenGL,  "Models/robot/drone.obj", "opengl.tga", 1, true);
+	result = m_ObjModel->InitializeObj(m_OpenGL,  "Models/nnn/Earth.obj", "Earth_D.tga", 2, true);
+	if(!result)
+=======
 	result = m_ObjModel->InitializeObj(m_OpenGL, "Models/robot/drone.obj", "opengl.tga", 1, true);
 	if (!result)
+>>>>>>> c7744e6c039fb74ef0621968d55f9fd6cf357046
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
@@ -312,7 +318,11 @@ bool GraphicsClass::Render(float rotation)
 	//  printf("Coordinates in object space: %f, %f, %f\n", worldPos.x, worldPos.y, worldPos.z);
 	// Set the light shader as the current shader program and set the matrices that it will use for rendering.
 	m_LightShader->SetShader(m_OpenGL);
+<<<<<<< HEAD
+	m_LightShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix),  glm::value_ptr(projectionMatrix), 2,  glm::value_ptr(lightDirection),  glm::value_ptr(diffuseLightColor));
+=======
 	m_LightShader->SetShaderParameters(m_OpenGL, glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 1, glm::value_ptr(lightDirection), glm::value_ptr(diffuseLightColor));
+>>>>>>> c7744e6c039fb74ef0621968d55f9fd6cf357046
 
 	m_ObjModel->Render(m_OpenGL);
 
