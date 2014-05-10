@@ -50,36 +50,37 @@ int ObjectDetector::Init(string filename) {
 }
 
 std::vector<vector<DMatch>> matches;
-std::vector< DMatch > good_matches;
-bool ObjectDetector::detectObject(Mat& grayScaleFrame) {
 
+bool ObjectDetector::detectObject(Mat& grayScaleFrame) {
+	std::vector< DMatch > good_matches;
+	
 	//use Surf detector to detect key points
 	m_Detector.detect(grayScaleFrame, m_FrameKeyPoints);
 
 	//compute a description object (feature vectors)
 	m_Extractor.compute(grayScaleFrame, m_FrameKeyPoints, m_FrameDescription);
-
+	
 	//Matching descriptor vectors using FLANN matcher
 	m_Matcher.knnMatch(m_MarkerObjectDescription, m_FrameDescription, matches, 2);
-
-	good_matches.clear();
 
 	//Quick calculation of max and min distances between keypoints
 	for (int i = 0; i < min(m_MarkerObjectDescription.rows - 1, (int)matches.size()); i++)
 	{
 		if ((int)matches[i].size() <= 2 && (int)matches[i].size() > 0) {
-			if (matches[i][0].distance < 0.6*(matches[i][1].distance)) {
+			if (matches[i][0].distance < 0.95 * (matches[i][1].distance)) {
 				good_matches.push_back(matches[i][0]);
 			}
 		}
 	}
 
 	//Localize the object
-	m_Obj.clear();
-	m_Scene.clear();
 
 	if (good_matches.size() >= 4)
 	{
+		m_Obj.clear();
+		m_Obj.resize(0);
+		m_Scene.clear();
+		m_Scene.resize(0);
 		for (int i = 0; i < good_matches.size(); i++)
 		{
 			//Get the keypoints from the good matches
@@ -88,6 +89,7 @@ bool ObjectDetector::detectObject(Mat& grayScaleFrame) {
 		}
 		return true;
 	}
+	
 	return false;
 }
 
@@ -107,6 +109,7 @@ void ObjectDetector::AnalyseFrame(Mat& frame) {
 	}
 	else{
 		m_Homography.empty();
+		//m_tracker.Reset();
 	}
 }
 
@@ -260,18 +263,18 @@ void ObjectDetector::UpdateAlphaBetaTracker()
 
 	GetYPR(m_AR_object_rotation, yaw, pitch, roll);
 
-	//	m_tracker.SetState(x, y, z, yaw, pitch, roll);
+		//m_tracker.SetState(x, y, z, yaw, pitch, roll);
 
-	//if (m_tracker.Ready()) {
-	//m_tracker.GetCorrectedState(&x, &y, &z, &yaw, &pitch, &roll);
+//	if (m_tracker.Ready()) {
+	//	m_tracker.GetCorrectedState(&x, &y, &z, &yaw, &pitch, &roll);
 
-	m_AR_object_rotation = MakeRotation3x3(yaw, pitch, roll);
-	m_AR_object_translation.at<double>(0, 0) = x;
-	m_AR_object_translation.at<double>(1, 0) = y;
-	m_AR_object_translation.at<double>(2, 0) = z;
+		m_AR_object_rotation = MakeRotation3x3(yaw, pitch, roll);
+		m_AR_object_translation.at<double>(0, 0) = x;
+		m_AR_object_translation.at<double>(1, 0) = y;
+		m_AR_object_translation.at<double>(2, 0) = z;
 
-	cv::Point2i ret_corners[4];
-	ProjectModel(x, y, z, yaw, pitch, roll, ret_corners);
+		cv::Point2i ret_corners[4];
+		ProjectModel(x, y, z, yaw, pitch, roll, ret_corners);
 	//}
 
 	ObjectDetectorResults result = ObjectDetectorResults(m_AR_object_rotation, m_AR_object_translation);

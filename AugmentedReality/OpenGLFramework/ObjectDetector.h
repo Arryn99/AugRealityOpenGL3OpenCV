@@ -9,7 +9,7 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/nonfree/features2d.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
+#include "AlphaBetaTracker.h"
 using namespace std;
 using namespace cv;
 
@@ -109,6 +109,11 @@ private:
 	cv::Mat m_AR_object_translation;
 
 	std::vector<ObjectDetectorResults> m_Results;
+
+	/*============= smoothing out the results ============*/
+	//AlphaBetaTracker m_tracker;
+	int m_failed_frames; // number of consecutive failed detection
+	int m_max_consecutive_fails;
 
 };
 

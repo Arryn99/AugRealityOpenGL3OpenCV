@@ -7,11 +7,10 @@ ObjectDetector m_ObjectDetector;
 bool detecting = false;
 
 void tryToFindObject(Mat& cameraFrame){
-	if (!detecting) {
-		detecting = true;
+	while (detecting) {
 		m_ObjectDetector.AnalyseFrame(cameraFrame);
-		detecting = false;
 	}
+	detecting = false;
 }
 
 GraphicsClass::GraphicsClass()
@@ -55,7 +54,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, 0.0f);
 
 	////////////////
 	// Create the screen quad.
@@ -111,14 +110,8 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 
 	// Initialize the model object.
-<<<<<<< HEAD
-	//result = m_ObjModel->InitializeObj(m_OpenGL,  "Models/robot/drone.obj", "opengl.tga", 1, true);
-	result = m_ObjModel->InitializeObj(m_OpenGL,  "Models/nnn/Earth.obj", "Earth_D.tga", 2, true);
-	if(!result)
-=======
 	result = m_ObjModel->InitializeObj(m_OpenGL, "Models/robot/drone.obj", "opengl.tga", 1, true);
 	if (!result)
->>>>>>> c7744e6c039fb74ef0621968d55f9fd6cf357046
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
@@ -150,7 +143,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 
-	m_ObjectDetector.Init("chewing.jpg");
+	m_ObjectDetector.Init("businessCard.jpg");
 
 	return true;
 }
@@ -225,7 +218,12 @@ bool GraphicsClass::Frame(int frameCount)
 	} 
 
 	m_videoCapture >> cameraFrame;
-	boost::thread objectDetectionThread(&tryToFindObject, cameraFrame);
+	//if (frameCount % 5 == 0) {
+	if (!detecting) {
+			detecting = true;
+			boost::thread objectDetectionThread(&tryToFindObject, cameraFrame);
+	}
+	//}
 
 	m_ObjectDetector.drawDetections(cameraFrame);
 	m_ObjectDetector.SetCameraCentre(cameraFrame.cols / 2, cameraFrame.rows / 2);
@@ -285,7 +283,7 @@ bool GraphicsClass::Render(float rotation)
 	//glm::vec3 screenPos = glm::vec3(0.0f, 0.0f, 1.0f);
 	//glm::vec3 worldPos = glm::unProject(screenPos, viewMatrix, projectionMatrix, glm::vec4(0.0f, 0.0f, 640, 480));
 
-
+	
 	m_ObjectDetector.GetYPR(yaw, pitch, roll);
 	m_ObjectDetector.getObjectPosition(x, y, z);
 
@@ -302,27 +300,33 @@ bool GraphicsClass::Render(float rotation)
 		sprintf(numstr, "z %f \n", z);
 		OutputDebugStringA(numstr);
 	}
+	
+	float eularDegreesX = (float)glm::degrees(yaw);
+	float eularDegreesY = (float)glm::degrees(pitch);
+	float eularDegreesZ = (float)glm::degrees(roll);
+	cout << "yaw" << eularDegreesX << "pitch" << eularDegreesY << "roll" << eularDegreesZ;
 
-	worldMatrix *= glm::translate(worldMatrix, glm::vec3(x, y, z));
-	/*float degrees = (float)glm::degrees(yaw);
-	cout << degrees;
-	worldMatrix *= glm::rotate(worldMatrix, degrees, glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::mat4 rotateX;
+	glm::mat4 rotateY;
+	glm::mat4 rotateZ;
 
-	degrees = (float)glm::degrees(pitch);
-	cout << degrees;
-	worldMatrix *= glm::rotate(worldMatrix, degrees, glm::vec3(0.0f, 1.0f, 0.0f));
+	rotateX = glm::rotate(rotateX, -eularDegreesZ, glm::vec3(1.0f, 0.0f, 0.0f));
+	rotateY = glm::rotate(rotateY, -eularDegreesY, glm::vec3(0.0f, 1.0f, 0.0f));
+	rotateZ = glm::rotate(rotateZ, eularDegreesX, glm::vec3(0.0f, 0.0f, 1.0f));
 
-	degrees = (float)glm::degrees(roll);
-	cout << degrees;
-	worldMatrix *= glm::rotate(worldMatrix, degrees, glm::vec3(0.0f, 0.0f, 1.0f));*/
+	glm::mat4 rotate = rotateX * rotateY  * rotateZ;// *rotateZ;
+
+	worldMatrix *= glm::translate(worldMatrix, glm::vec3(x*-55,y * -44, z));
+	worldMatrix *= glm::scale(worldMatrix, glm::vec3(10, 10, 10));
+	worldMatrix *= rotate;
+
+	// worldMatrix *= glm::translate(worldMatrix, glm::vec3(0, 0, 5));
+
 	//  printf("Coordinates in object space: %f, %f, %f\n", worldPos.x, worldPos.y, worldPos.z);
 	// Set the light shader as the current shader program and set the matrices that it will use for rendering.
 	m_LightShader->SetShader(m_OpenGL);
-<<<<<<< HEAD
-	m_LightShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix),  glm::value_ptr(projectionMatrix), 2,  glm::value_ptr(lightDirection),  glm::value_ptr(diffuseLightColor));
-=======
-	m_LightShader->SetShaderParameters(m_OpenGL, glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 1, glm::value_ptr(lightDirection), glm::value_ptr(diffuseLightColor));
->>>>>>> c7744e6c039fb74ef0621968d55f9fd6cf357046
+	m_LightShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix),  glm::value_ptr(projectionMatrix), 1,  glm::value_ptr(lightDirection),  glm::value_ptr(diffuseLightColor));
+
 
 	m_ObjModel->Render(m_OpenGL);
 
