@@ -13,6 +13,27 @@ void tryToFindObject(Mat& cameraFrame){
 	detecting = false;
 }
 
+void printVector(glm::vec3& lightDirection, const char* print) {
+	char numstr[21];
+	sprintf(numstr, print);
+	OutputDebugStringA(numstr);
+	sprintf(numstr, " x %f ", lightDirection.x);
+	OutputDebugStringA(numstr);
+	sprintf(numstr, "y %f ", lightDirection.y);
+	OutputDebugStringA(numstr);
+	sprintf(numstr, "z %f \n", lightDirection.z);
+	OutputDebugStringA(numstr);
+}
+
+void printValue(float distance, const char* print) {
+	char numstr[21];
+	sprintf(numstr, print);
+	OutputDebugStringA(numstr);
+	sprintf(numstr, ": %f \n", distance);
+	OutputDebugStringA(numstr);
+}
+
+
 GraphicsClass::GraphicsClass()
 {
 	m_OpenGL = 0;
@@ -110,7 +131,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_ObjModel->InitializeObj(m_OpenGL, "Models/robot/drone.obj", "opengl.tga", 1, true);
+	result = m_ObjModel->InitializeObj(m_OpenGL, "Models/robot/drone.obj", "Models/robot/EvilDrone_Diff.png", 1, true);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -151,6 +172,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
+	detecting = false;
 
 	// Release the texture shader object.
 	if (m_ScreenTextureShader)
@@ -218,12 +240,12 @@ bool GraphicsClass::Frame(int frameCount)
 	} 
 
 	m_videoCapture >> cameraFrame;
-	//if (frameCount % 5 == 0) {
+
 	if (!detecting) {
 			detecting = true;
 			boost::thread objectDetectionThread(&tryToFindObject, cameraFrame);
 	}
-	//}
+
 
 	m_ObjectDetector.drawDetections(cameraFrame);
 	m_ObjectDetector.SetCameraCentre(cameraFrame.cols / 2, cameraFrame.rows / 2);
@@ -241,6 +263,11 @@ bool GraphicsClass::Frame(int frameCount)
 
 double x, y, z;
 double yaw, pitch, roll;
+
+glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 10.0f);
+glm::vec3 markerPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+
+float degrees = 0;
 bool GraphicsClass::Render(float rotation)
 {
 	glm::mat4 worldMatrix;
@@ -279,26 +306,13 @@ bool GraphicsClass::Render(float rotation)
 
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
 	//
-
-	//glm::vec3 screenPos = glm::vec3(0.0f, 0.0f, 1.0f);
-	//glm::vec3 worldPos = glm::unProject(screenPos, viewMatrix, projectionMatrix, glm::vec4(0.0f, 0.0f, 640, 480));
-
-	
-	m_ObjectDetector.GetYPR(yaw, pitch, roll);
-	m_ObjectDetector.getObjectPosition(x, y, z);
-
 	ObjectDetectorResults* result = m_ObjectDetector.getResults();
 	if (result != NULL) {
-		
-		result->getObjectPosition(x, y, z);
-	
-		char numstr[21]; // enough to hold all numbers up to 64-bits
-		sprintf(numstr, "x %f \n", x);
-		OutputDebugStringA(numstr);
-		sprintf(numstr, "y %f \n", y);
-		OutputDebugStringA(numstr);
-		sprintf(numstr, "z %f \n", z);
-		OutputDebugStringA(numstr);
+		m_ObjectDetector.GetYPR(yaw, pitch, roll);
+		m_ObjectDetector.getObjectPosition(x, y, z);
+
+		markerPosition = glm::vec3(x, y, z);
+		markerPosition *= glm::vec3(-60, -50, 1); // correct for co-ordinate space.
 	}
 	
 	float eularDegreesX = (float)glm::degrees(yaw);
@@ -316,19 +330,48 @@ bool GraphicsClass::Render(float rotation)
 
 	glm::mat4 rotate = rotateX * rotateY  * rotateZ;// *rotateZ;
 
-	worldMatrix *= glm::translate(worldMatrix, glm::vec3(x*-55,y * -44, z));
-	worldMatrix *= glm::scale(worldMatrix, glm::vec3(10, 10, 10));
-	worldMatrix *= rotate;
+	// smooth between the object position and the marker position .
+	float distance = glm::distance(objectPosition, markerPosition);
+	if (distance  < 1000) {
+		printValue(distance, "distance");
+		float t = distance / 100.0f;
+		printValue(t, "t");
+		objectPosition = glm::mix(objectPosition, markerPosition, t);
+	}
+	else{
+		objectPosition = markerPosition;
+	}
 
-	// worldMatrix *= glm::translate(worldMatrix, glm::vec3(0, 0, 5));
+	worldMatrix *= glm::translate(worldMatrix, objectPosition);
+	worldMatrix *= glm::scale(worldMatrix, glm::vec3(30, 30, 30));
+    worldMatrix *= rotate;
 
-	//  printf("Coordinates in object space: %f, %f, %f\n", worldPos.x, worldPos.y, worldPos.z);
 	// Set the light shader as the current shader program and set the matrices that it will use for rendering.
 	m_LightShader->SetShader(m_OpenGL);
 	m_LightShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix),  glm::value_ptr(projectionMatrix), 1,  glm::value_ptr(lightDirection),  glm::value_ptr(diffuseLightColor));
 
 
 	m_ObjModel->Render(m_OpenGL);
+
+	/*glm::mat4 planet;
+	degrees += 10;
+
+	if (degrees > 180) {
+		degrees = 10;
+	}
+	float sine = glm::sin(glm::radians(degrees *2));
+	float sine2 = sine * sine;
+
+	planet *= glm::rotate(planet, degrees, glm::vec3(0.0f, 0.0f, 1.0f));
+	planet *= glm::translate(planet, objectPosition + glm::vec3(0, 1+ sine2 * 2, 0));*/
+	
+	//planet *= glm::scale(planet, glm::vec3(10, 10, 10));
+	//planet *= rotate;
+	
+
+
+	//m_LightShader->SetShaderParameters(m_OpenGL, glm::value_ptr(planet), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 1, glm::value_ptr(lightDirection), glm::value_ptr(diffuseLightColor));
+	//m_ObjModel->Render(m_OpenGL);
 
 	// Present the rendered scene to the screen.
 	m_OpenGL->EndScene();

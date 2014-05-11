@@ -159,9 +159,9 @@ bool TextureClass::Initialize(OpenGLClass* OpenGL, unsigned int textureUnit, boo
 	return true;
 }
 
-bool TextureClass::loadMatIntoTexture(OpenGLClass*OpenGL, Mat& mat){
+bool TextureClass::loadMatIntoTexture(OpenGLClass*OpenGL, Mat& mat, unsigned int textureUnit){
 	// Set the unique texture unit in which to store the data.
-	OpenGL->glActiveTexture(GL_TEXTURE0 + 0);
+	OpenGL->glActiveTexture(GL_TEXTURE0 + textureUnit);
 
 	// Bind the texture as a 2D texture.
 	glBindTexture(GL_TEXTURE_2D, m_textureID);

@@ -55,7 +55,7 @@ bool ScreenQuad::Initialize(OpenGLClass* OpenGL, Mat& textureFilename, unsigned 
 }
 
 void ScreenQuad::updateTexture(OpenGLClass* OpenGL, Mat& textureFilename ){
-	m_ScreenTexture->loadMatIntoTexture(OpenGL, textureFilename);
+	m_ScreenTexture->loadMatIntoTexture(OpenGL, textureFilename, 0);
 }
 
 

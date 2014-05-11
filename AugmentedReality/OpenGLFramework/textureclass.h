@@ -26,7 +26,7 @@ public:
 
 	bool Initialize(OpenGLClass*, char*, unsigned int, bool);
 	bool Initialize(OpenGLClass*, unsigned int, bool);
-	bool loadMatIntoTexture(OpenGLClass*, Mat& mat);
+	bool loadMatIntoTexture(OpenGLClass*OpenGL, Mat& mat, unsigned int textureUnit);
 	void Shutdown();
 
 private:

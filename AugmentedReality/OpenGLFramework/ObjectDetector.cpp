@@ -49,8 +49,8 @@ int ObjectDetector::Init(string filename) {
 	SetARObject(m_MarkerObject);
 }
 
-std::vector<vector<DMatch>> matches;
-
+//std::vector<vector<DMatch>> matches;
+std::vector< DMatch > matches;
 bool ObjectDetector::detectObject(Mat& grayScaleFrame) {
 	std::vector< DMatch > good_matches;
 	
@@ -61,21 +61,36 @@ bool ObjectDetector::detectObject(Mat& grayScaleFrame) {
 	m_Extractor.compute(grayScaleFrame, m_FrameKeyPoints, m_FrameDescription);
 	
 	//Matching descriptor vectors using FLANN matcher
-	m_Matcher.knnMatch(m_MarkerObjectDescription, m_FrameDescription, matches, 2);
+	//m_Matcher.knnMatch(m_MarkerObjectDescription, m_FrameDescription, matches, 2);
+	m_Matcher.match(m_MarkerObjectDescription, m_FrameDescription, matches);
 
-	//Quick calculation of max and min distances between keypoints
-	for (int i = 0; i < min(m_MarkerObjectDescription.rows - 1, (int)matches.size()); i++)
+	double max_dist = 0; double min_dist = 100;
+
+	//-- Quick calculation of max and min distances between keypoints
+	for (int i = 0; i < m_MarkerObjectDescription.rows; i++)
 	{
-		if ((int)matches[i].size() <= 2 && (int)matches[i].size() > 0) {
-			if (matches[i][0].distance < 0.95 * (matches[i][1].distance)) {
-				good_matches.push_back(matches[i][0]);
-			}
+		double dist = matches[i].distance;
+		if (dist < min_dist) min_dist = dist;
+		if (dist > max_dist) max_dist = dist;
+	}
+
+	printf("-- Max dist : %f \n", max_dist);
+	printf("-- Min dist : %f \n", min_dist);
+
+	//-- Draw only "good" matches (i.e. whose distance is less than 3*min_dist )
+	//std::vector< DMatch > good_matches;
+
+	for (int i = 0; i < m_MarkerObjectDescription.rows; i++)
+	{
+		if (matches[i].distance < 3 * min_dist)
+		{
+			good_matches.push_back(matches[i]);
 		}
 	}
 
 	//Localize the object
 
-	if (good_matches.size() >= 4)
+	if (good_matches.size() >= 15)
 	{
 		m_Obj.clear();
 		m_Obj.resize(0);

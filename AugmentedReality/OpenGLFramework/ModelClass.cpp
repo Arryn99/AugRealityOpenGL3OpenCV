@@ -1,6 +1,7 @@
 #include "modelclass.h"
 #include "TokenStream.h"
 #include "Vec3.h"
+#include <opencv2/highgui/highgui.hpp>
 
 ModelClass::ModelClass()
 {
@@ -67,8 +68,12 @@ bool ModelClass::InitializeObj(OpenGLClass* OpenGL, char* modelFilename, char* t
 		return false;
 	}
 
+	cv::Mat texture = cv::imread(textureFilename);
+	m_Texture = new TextureClass;
+	m_Texture->loadMatIntoTexture(OpenGL, texture, textureUnit);
+
 	// Load the texture for this model.
-	result = LoadTexture(OpenGL, textureFilename, textureUnit, wrap);
+	//result = LoadTexture(OpenGL, textureFilename, textureUnit, wrap);
 	if(!result)
 	{
 		return false;

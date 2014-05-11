@@ -15,14 +15,11 @@ using namespace cv;
 
 class ObjectDetectorResults  {
 public:
-	ObjectDetectorResults(Mat& rotation, Mat& translation){
+	ObjectDetectorResults(Mat rotation, Mat translation){
 		m_rotation = rotation;
 		m_translation = translation;
 	}
-
 	void getObjectPosition(double& x, double& y, double& z);
-
-	double x, y, z;
 private:
 	Mat m_rotation;
 	Mat m_translation;
