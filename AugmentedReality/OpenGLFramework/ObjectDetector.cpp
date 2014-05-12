@@ -2,6 +2,7 @@
 #define M_PI       3.14159265358979323846
 #include <boost/thread.hpp>
 #include "RPP.h"
+#include <Windows.h>
 
 void ObjectDetectorResults::getObjectPosition(double& x, double& y, double& z) {
 	if (m_translation.cols > 0) {
@@ -113,6 +114,9 @@ Analyses each frame of camera feed.
 @param frame - a matrix representing the camera frame
 */
 void ObjectDetector::AnalyseFrame(Mat& frame) {
+	boost::posix_time::ptime t1, t2;
+
+	t1 = boost::posix_time::microsec_clock::local_time();
 	//convert the camera frame to a grey scale image and save it in the image variable
 	cvtColor(frame, m_greyScaleImage, CV_RGB2GRAY);
 
@@ -124,8 +128,11 @@ void ObjectDetector::AnalyseFrame(Mat& frame) {
 	}
 	else{
 		m_Homography.empty();
-		//m_tracker.Reset();
 	}
+	t2 = boost::posix_time::microsec_clock::local_time();
+	char numstr[21];
+	sprintf(numstr, "detect : %d ms \n", (t2 - t1).total_milliseconds());
+	OutputDebugStringA(numstr);
 }
 
 void ObjectDetector::drawDetections(Mat& frame) {
@@ -189,7 +196,10 @@ bool ObjectDetector::PoseEstimation(const cv::Mat &H)
 	t2 = boost::posix_time::microsec_clock::local_time();
 
 	cout << "RPP: " << (t2 - t1).total_milliseconds() << " ms" << endl;
-
+	char numstr[21];
+	sprintf(numstr, "RPP: %d ms \n", (t2 - t1).total_milliseconds());
+	OutputDebugStringA(numstr);
+	
 	return true;
 }
 

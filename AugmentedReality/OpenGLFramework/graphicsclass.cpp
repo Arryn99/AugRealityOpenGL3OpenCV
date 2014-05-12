@@ -33,7 +33,6 @@ void printValue(float distance, const char* print) {
 	OutputDebugStringA(numstr);
 }
 
-
 GraphicsClass::GraphicsClass()
 {
 	m_OpenGL = 0;
@@ -267,6 +266,8 @@ double yaw, pitch, roll;
 glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 10.0f);
 glm::vec3 markerPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 
+glm::vec3 markerRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 objectRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 float degrees = 0;
 bool GraphicsClass::Render(float rotation)
 {
@@ -315,32 +316,37 @@ bool GraphicsClass::Render(float rotation)
 		markerPosition *= glm::vec3(-60, -50, 1); // correct for co-ordinate space.
 	}
 	
+	
+
+	// smooth between the object position and the marker position .
+	float distance = glm::distance(objectPosition, markerPosition);
+	if (distance < 1000) {		
+		float t = distance / 100.0f;
+		objectPosition = glm::mix(objectPosition, markerPosition, t);
+
+		distance = glm::distance(objectRotation, markerRotation);
+		t = distance / 100.0f;
+		objectRotation = glm::mix(objectRotation, markerRotation, t);
+	}
+	else{
+		objectPosition = markerPosition;
+	}
+
 	float eularDegreesX = (float)glm::degrees(yaw);
 	float eularDegreesY = (float)glm::degrees(pitch);
 	float eularDegreesZ = (float)glm::degrees(roll);
 	cout << "yaw" << eularDegreesX << "pitch" << eularDegreesY << "roll" << eularDegreesZ;
+	markerRotation = glm::vec3(-eularDegreesZ, -eularDegreesY, eularDegreesX);
 
 	glm::mat4 rotateX;
 	glm::mat4 rotateY;
 	glm::mat4 rotateZ;
 
-	rotateX = glm::rotate(rotateX, -eularDegreesZ, glm::vec3(1.0f, 0.0f, 0.0f));
-	rotateY = glm::rotate(rotateY, -eularDegreesY, glm::vec3(0.0f, 1.0f, 0.0f));
-	rotateZ = glm::rotate(rotateZ, eularDegreesX, glm::vec3(0.0f, 0.0f, 1.0f));
+	rotateX = glm::rotate(rotateX, markerRotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	rotateY = glm::rotate(rotateY, markerRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	rotateZ = glm::rotate(rotateZ, markerRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
-	glm::mat4 rotate = rotateX * rotateY  * rotateZ;// *rotateZ;
-
-	// smooth between the object position and the marker position .
-	float distance = glm::distance(objectPosition, markerPosition);
-	if (distance  < 1000) {
-		printValue(distance, "distance");
-		float t = distance / 100.0f;
-		printValue(t, "t");
-		objectPosition = glm::mix(objectPosition, markerPosition, t);
-	}
-	else{
-		objectPosition = markerPosition;
-	}
+	glm::mat4 rotate = rotateX * rotateY * rotateZ;// *rotateZ;
 
 	worldMatrix *= glm::translate(worldMatrix, objectPosition);
 	worldMatrix *= glm::scale(worldMatrix, glm::vec3(30, 30, 30));
@@ -350,28 +356,7 @@ bool GraphicsClass::Render(float rotation)
 	m_LightShader->SetShader(m_OpenGL);
 	m_LightShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix),  glm::value_ptr(projectionMatrix), 1,  glm::value_ptr(lightDirection),  glm::value_ptr(diffuseLightColor));
 
-
 	m_ObjModel->Render(m_OpenGL);
-
-	/*glm::mat4 planet;
-	degrees += 10;
-
-	if (degrees > 180) {
-		degrees = 10;
-	}
-	float sine = glm::sin(glm::radians(degrees *2));
-	float sine2 = sine * sine;
-
-	planet *= glm::rotate(planet, degrees, glm::vec3(0.0f, 0.0f, 1.0f));
-	planet *= glm::translate(planet, objectPosition + glm::vec3(0, 1+ sine2 * 2, 0));*/
-	
-	//planet *= glm::scale(planet, glm::vec3(10, 10, 10));
-	//planet *= rotate;
-	
-
-
-	//m_LightShader->SetShaderParameters(m_OpenGL, glm::value_ptr(planet), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 1, glm::value_ptr(lightDirection), glm::value_ptr(diffuseLightColor));
-	//m_ObjModel->Render(m_OpenGL);
 
 	// Present the rendered scene to the screen.
 	m_OpenGL->EndScene();
