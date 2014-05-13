@@ -2,13 +2,16 @@
 #include <opencv2\core\core.hpp>
 #include <boost/thread.hpp>
 
+Mat cameraFrame;	//updated every 5 frames to hold the camera feed image
 //object detector
 ObjectDetector m_ObjectDetector;
 bool detecting = false;
 
-void tryToFindObject(Mat& cameraFrame){
+void tryToFindObject(){
 	while (detecting) {
-		m_ObjectDetector.AnalyseFrame(cameraFrame);
+		if(cameraFrame.rows>0) {
+			m_ObjectDetector.AnalyseFrame(cameraFrame);
+		}
 	}
 	detecting = false;
 }
@@ -164,7 +167,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 
 	m_ObjectDetector.Init("businessCard.jpg");
-
+	
 	return true;
 }
 
@@ -240,11 +243,11 @@ bool GraphicsClass::Frame(int frameCount)
 
 	m_videoCapture >> cameraFrame;
 
+	
 	if (!detecting) {
 			detecting = true;
-			boost::thread objectDetectionThread(&tryToFindObject, cameraFrame);
+			boost::thread objectDetectionThread(&tryToFindObject);
 	}
-
 
 	m_ObjectDetector.drawDetections(cameraFrame);
 	m_ObjectDetector.SetCameraCentre(cameraFrame.cols / 2, cameraFrame.rows / 2);

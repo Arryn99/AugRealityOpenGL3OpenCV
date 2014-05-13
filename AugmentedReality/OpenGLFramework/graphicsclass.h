@@ -47,7 +47,7 @@ private:
 
 	VideoCapture m_videoCapture;
 
-	Mat cameraFrame;	//updated every 5 frames to hold the camera feed image
+	
 	ModelClass* m_ObjModel;
 
 };
