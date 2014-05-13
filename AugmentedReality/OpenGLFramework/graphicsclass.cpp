@@ -6,6 +6,7 @@ Mat cameraFrame;	//updated every 5 frames to hold the camera feed image
 //object detector
 ObjectDetector m_ObjectDetector;
 bool detecting = false;
+TextureClass moonTexture;
 
 void tryToFindObject(){
 	while (detecting) {
@@ -118,14 +119,8 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 		return false;
 	}
 
-	// Initialize the model object.
-	result = m_Model->Initialize(m_OpenGL, "cube.txt", "opengl.tga", 1, true);
-	if (!result)
-	{
-		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
+	
+	// Initialize the model object.	
 	m_ObjModel = new ModelClass;
 	if (!m_ObjModel)
 	{
@@ -133,7 +128,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_ObjModel->InitializeObj(m_OpenGL, "Models/robot/drone.obj", "Models/robot/EvilDrone_Diff.png", 1, true);
+	result = m_ObjModel->InitializeObj(m_OpenGL, "Models/Planet/Earth.obj", "Models/Planet/Earth_texture.png", 2, true);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -166,8 +161,13 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 
+
 	m_ObjectDetector.Init("businessCard.jpg");
-	
+
+	Mat moonMat = imread("Models/Planet/Moon_texture.jpg");
+	moonTexture.Initialize(m_OpenGL, 1, false);
+	moonTexture.loadMatIntoTexture(m_OpenGL, moonMat, 1);
+
 	return true;
 }
 
@@ -175,6 +175,8 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	detecting = false;
+
+	moonTexture.Shutdown();
 
 	// Release the texture shader object.
 	if (m_ScreenTextureShader)
@@ -274,7 +276,7 @@ glm::vec3 objectRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 float degrees = 0;
 bool GraphicsClass::Render(float rotation)
 {
-	glm::mat4 worldMatrix;
+	glm::mat4 markerMatrix;
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
 	glm::vec3 lightDirection;
@@ -289,7 +291,7 @@ bool GraphicsClass::Render(float rotation)
 
 	// Set the texture shader as the current shader program and set the matrices that it will use for rendering.
 	m_ScreenTextureShader->SetShader(m_OpenGL);
-	m_ScreenTextureShader->SetShaderParameters(m_OpenGL, glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 0);
+	m_ScreenTextureShader->SetShaderParameters(m_OpenGL, glm::value_ptr(markerMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 0);
 
 	//disable depth test
 	glDisable(GL_DEPTH_TEST);
@@ -345,20 +347,40 @@ bool GraphicsClass::Render(float rotation)
 	glm::mat4 rotateY;
 	glm::mat4 rotateZ;
 
-	rotateX = glm::rotate(rotateX, markerRotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	rotateY = glm::rotate(rotateY, markerRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	rotateZ = glm::rotate(rotateZ, markerRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	rotateX = glm::rotate(glm::mat4(), markerRotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	rotateY = glm::rotate(glm::mat4(), markerRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	rotateZ = glm::rotate(glm::mat4(), markerRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
 	glm::mat4 rotate = rotateX * rotateY * rotateZ;// *rotateZ;
 
-	worldMatrix *= glm::translate(worldMatrix, objectPosition);
-	worldMatrix *= glm::scale(worldMatrix, glm::vec3(30, 30, 30));
-    worldMatrix *= rotate;
+	markerMatrix *= glm::translate(glm::mat4(), objectPosition);
+	markerMatrix *= glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
+	markerMatrix *= rotate;
 
-	// Set the light shader as the current shader program and set the matrices that it will use for rendering.
 	m_LightShader->SetShader(m_OpenGL);
-	m_LightShader->SetShaderParameters(m_OpenGL,  glm::value_ptr(worldMatrix), glm::value_ptr(viewMatrix),  glm::value_ptr(projectionMatrix), 1,  glm::value_ptr(lightDirection),  glm::value_ptr(diffuseLightColor));
+	/* ========================================= planets orbit ============================================= */
+	glm::mat4 earthMatrix; // identity martix
+	earthMatrix *= glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); // move moon away from earth
+	earthMatrix *= glm::scale(glm::mat4(), glm::vec3(15.0f, 15.0f, 15.0f)); // scale it to make it smaller.
+	earthMatrix *= glm::rotate(glm::mat4(), degrees, glm::vec3(0.0f, 1.0f, 0.0f));;
 
+	earthMatrix = markerMatrix * earthMatrix; // draw at marker
+
+	// draw planet 1.
+	m_LightShader->SetShaderParameters(m_OpenGL, glm::value_ptr(earthMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 2, glm::value_ptr(lightDirection), glm::value_ptr(diffuseLightColor));
+	m_ObjModel->Render(m_OpenGL);
+
+	glm::mat4 moonMatrix; // identity martix
+	moonMatrix *= glm::translate(glm::mat4(), glm::vec3(0.0f, 18.0f, 0.0f)); // move moon away from earth
+	moonMatrix *= glm::scale(glm::mat4(), glm::vec3(5.0f, 5.0f, 5.0f)); // scale it to make it smaller.
+
+	degrees += 4; // increase the rotation
+	glm::mat4 rotatePlanet; // identity matrix
+	rotatePlanet = glm::rotate(glm::mat4(), degrees, glm::vec3(0.0f, 0.0f, 1.0f)); // rotate around the z axiz
+
+	moonMatrix = rotatePlanet * moonMatrix; // rotate around origin
+	moonMatrix = markerMatrix * moonMatrix; // draw at marker
+	m_LightShader->SetShaderParameters(m_OpenGL, glm::value_ptr(moonMatrix), glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), 1, glm::value_ptr(lightDirection), glm::value_ptr(diffuseLightColor));
 	m_ObjModel->Render(m_OpenGL);
 
 	// Present the rendered scene to the screen.

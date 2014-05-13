@@ -149,7 +149,7 @@ bool TextureClass::LoadTarga(OpenGLClass* OpenGL, char* filename, unsigned int t
 bool TextureClass::Initialize(OpenGLClass* OpenGL, unsigned int textureUnit, bool wrap){
 
 	
-	OpenGL->glActiveTexture(GL_TEXTURE0 + 0);
+	OpenGL->glActiveTexture(GL_TEXTURE0 + textureUnit);
 
 	// Generate an ID for the texture.
 	glGenTextures(1, &m_textureID);
