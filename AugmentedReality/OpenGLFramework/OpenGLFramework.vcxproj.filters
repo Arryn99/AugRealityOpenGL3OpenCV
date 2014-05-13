@@ -87,6 +87,12 @@
     <ClCompile Include="Rpoly.cpp">
       <Filter>Source Files\OpenCV</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\NAR_Demo\NAR\AlphaBetaTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaBetaTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraclass.h">
@@ -125,9 +131,6 @@
     <ClInclude Include="TokenStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vec3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectDetector.h">
       <Filter>Header Files\OpenCV</Filter>
     </ClInclude>
@@ -136,6 +139,12 @@
     </ClInclude>
     <ClInclude Include="Rpoly.h">
       <Filter>Header Files\OpenCV</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaBetaTracker.h">
+      <Filter>Header Files\OpenCV</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
